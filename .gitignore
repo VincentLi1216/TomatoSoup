@@ -19,3 +19,6 @@ config/database.yml
 
 # 當然你要忽略自己也可以，只是通常不會這麼做
 # .gitignore
+
+# 忽略__pycache__資料夾
+ImageProcessing/__pycache__/
