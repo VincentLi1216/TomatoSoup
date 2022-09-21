@@ -14,6 +14,7 @@ config/database.yml
 *.png
 *.jpg
 *.JPG
+*.DS_Store
 
 # 當然你要忽略自己也可以，只是通常不會這麼做
 # .gitignore
