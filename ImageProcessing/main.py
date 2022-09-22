@@ -1,4 +1,4 @@
-from util_corner_selector import corner_selector
+from util_dst_cs_M.py import corner_selector
 
 
 print(corner_selector())

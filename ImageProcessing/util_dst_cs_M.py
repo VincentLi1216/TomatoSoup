@@ -1,4 +1,5 @@
 import cv2
+from util_distortion_correction import distorion_correction
 
 # 變數初始化
 dots = []  # 記錄座標的空串列
@@ -6,29 +7,13 @@ dot_num = 0  # 已經寫入的dot數
 tolerance = 30  # 重新選點時的最大誤差
 index = None  # 錯誤點對應到的dots[]參數
 fix_phase = 0  # 目前修正階段, phase % 2 = 1代表已經選擇好錯誤點, phase%2 = 0代表起始狀態或錯誤以被修正
-
+frame = distorion_correction()
 def corner_selector():
     global dots
     global dot_num
     global index
     global fix_phase
     global origin_frame
-    global frame
-
-    # 影像擷取
-    cv2.namedWindow("cam_capture")
-    vc = cv2.VideoCapture(2)
-
-    rval, frame = vc.read()
-
-    while True:
-
-        if frame is not None:
-            cv2.imshow("cam_capture", frame)
-        rval, frame = vc.read()
-
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
 
     origin_frame = frame.copy()  # 將原始frame進行快照，以便未來修正點可以清除後重新畫線
 
