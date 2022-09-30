@@ -3,11 +3,14 @@ import cv2
 
 def distorion_correction():
   cv2.namedWindow("window1")
-<<<<<<< HEAD
-  vc = cv2.VideoCapture(1)
-=======
-  vc = cv2.VideoCapture(2)
->>>>>>> f05c32838bba837277698a1e043c83d3a10b5b8d
+
+  input_camera = None  #user enter camera index
+  while input_camera == None or int(input_camera) > 3 or int(input_camera) < 0:
+    input_camera = int(input("Please enter the camera you would like to use(0~3):"))
+
+  vc = cv2.VideoCapture(input_camera)
+
+
   vc.set(cv2.CAP_PROP_FRAME_WIDTH, 3840)
   vc.set(cv2.CAP_PROP_FRAME_HEIGHT, 2160)
 
