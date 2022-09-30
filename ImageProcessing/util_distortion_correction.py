@@ -3,7 +3,11 @@ import cv2
 
 def distorion_correction():
   cv2.namedWindow("window1")
+<<<<<<< HEAD
   vc = cv2.VideoCapture(1)
+=======
+  vc = cv2.VideoCapture(2)
+>>>>>>> f05c32838bba837277698a1e043c83d3a10b5b8d
   vc.set(cv2.CAP_PROP_FRAME_WIDTH, 3840)
   vc.set(cv2.CAP_PROP_FRAME_HEIGHT, 2160)
 
