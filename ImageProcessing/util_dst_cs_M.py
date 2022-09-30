@@ -1,5 +1,6 @@
 import cv2
 from util_distortion_correction import distorion_correction
+from perspective_transform import perspective_transform
 
 # 變數初始化
 dots = []  # 記錄座標的空串列
@@ -62,6 +63,9 @@ def corner_selector():
                         cv2.circle(frame, (dots[index][0], dots[index][1]), 10, (255, 0, 0), -1)  # 在點擊的位置，繪製（藍色）圓形
                         cv2.imshow('cam_capture', frame)
                         fix_phase += 1
+
+                    if index != None:
+                        break
             elif dot_num == 4:
                 fix_phase += 1
 
@@ -106,15 +110,21 @@ def corner_selector():
         sorted_dots.append(dots[3])
         sorted_dots.append(dots[2])
 
-    if dots[0][1] < dots[0][1]:
+    if dots[0][1] > dots[1][1]:
         sorted_dots.append(dots[0])
         sorted_dots.append(dots[1])
     else:
         sorted_dots.append(dots[1])
         sorted_dots.append(dots[0])
-    # print(sorted_dots)
 
-    return sorted_dots
+    print(sorted_dots)
+
+
+    perspective_transform(origin_frame, sorted_dots)
+
+
+
+    # return sorted_dots
 
 
 if __name__ == "__main__":

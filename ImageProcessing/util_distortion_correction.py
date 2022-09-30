@@ -3,7 +3,11 @@ import cv2
 
 def distorion_correction():
   cv2.namedWindow("window1")
+<<<<<<< HEAD
+  vc = cv2.VideoCapture(1)
+=======
   vc = cv2.VideoCapture(2)
+>>>>>>> f05c32838bba837277698a1e043c83d3a10b5b8d
   vc.set(cv2.CAP_PROP_FRAME_WIDTH, 3840)
   vc.set(cv2.CAP_PROP_FRAME_HEIGHT, 2160)
 
@@ -19,6 +23,7 @@ def distorion_correction():
 
       break
 
+
   src = frame
   vc.release()
   # cv2.destroyWindow("window1")
@@ -30,7 +35,7 @@ def distorion_correction():
   distCoeff = np.zeros((4, 1), np.float64)
 
   # TODO: add your coefficients here!
-  k1 = -1.4e-5;  # negative to remove barrel distortion
+  k1 = 64.0e-7;  # negative to remove barrel distortion
   k2 = 0.0;
   p1 = 0.0;
   p2 = 0.0;
