@@ -15,8 +15,8 @@ horizontal_lines, vertical_lines, intersection_points, corner_each_quadrant = []
 quadrant_1_corner, quadrant_2_corner, quadrant_3_corner, quadrant_4_corner = [], [], [], []
 gray_normalized_kernel_horizontal, gray_normalized_kernel_vertical = None, None
 nr, nc = 0, 0
-hough_lines_threshold = 600  # Hough_lines的Threshold 預設為 600
-canny_threshold = 80       # Canny的Threshold 預設為 60
+hough_lines_threshold = 600    # Hough_lines的Threshold 預設為 600
+canny_threshold = 80           # Canny的Threshold 預設為 80
 src, src2 = None, None
 
 def return_time():    # 回傳當前時間
@@ -24,18 +24,18 @@ def return_time():    # 回傳當前時間
     now = time.localtime(seconds)
     return str("{:04d}{:02d}{:02d}_{:02d}{:02d}{:02d}".format(now.tm_year, now.tm_mon, now.tm_mday, now.tm_hour, now.tm_min, now.tm_sec))
 
-def Hough_lines(hough_lines_threshold, img, horizontal_or_vertical):  # 做 霍夫直線偵測
+def Hough_lines(hough_lines_threshold, img, horizontal_or_vertical):   # 做 霍夫直線偵測
     # global src
     global file_name
     img = np.uint8(img)
-    dst = cv.Canny(img, canny_threshold, canny_threshold, None, 3)  # 霍夫直線偵測包含Canny
+    dst = cv.Canny(img, canny_threshold, canny_threshold, None, 3)   # 霍夫直線偵測要先Canny
 
     cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_" + f'{horizontal_or_vertical}' + "_" + f'{filter_size}' + "_canny_" + f'{canny_threshold}' + "-" + f'{canny_threshold}' + ".jpg", dst)  # 生成 Canny 的結果圖
 
     lines = cv.HoughLines(dst, 1, np.pi / 360, hough_lines_threshold)
     global horizontal_lines
     global vertical_lines
-    if horizontal_or_vertical == "horizontal":
+    if horizontal_or_vertical == "horizontal":   # 因為卷積的圖，垂直線的圖跟水平線的圖是分開的，所以houghlines偵測也要分兩次，一次偵測垂直線，一次水平線
         horizontal_lines = []
     if horizontal_or_vertical == "vertical":
         vertical_lines = []
@@ -49,14 +49,14 @@ def Hough_lines(hough_lines_threshold, img, horizontal_or_vertical):  # 做 霍�
             y0 = (b * rho)
             pt1 = [int(x0 + 5000 * (-b)), int(y0 + 5000 * a)]
             pt2 = [int(x0 - 5000 * (-b)), int(y0 - 5000 * a)]
-            if (pt1[0] - pt2[0]) == 0:  # 計算直線斜率
-                slope = (pt1[1] - pt2[1]) / (10 ** (-1))  # 避免pt1[0]-pt2[0]==0 (x的變化量)，導致分母為0
+            if (pt1[0] - pt2[0]) == 0:   # 計算直線斜率
+                slope = (pt1[1] - pt2[1]) / (10 ** (-1))   # 避免pt1[0]-pt2[0]==0 (x的變化量)，導致分母為0
             else:
                 slope = (pt1[1] - pt2[1]) / (pt1[0] - pt2[0])
-            if (slope < 1) and (slope > -1):  # 依照斜率歸類為 水平線
+            if (slope < 1) and (slope > -1):   # 依照斜率歸類為 水平線
                 horizontal_lines.append([pt1[0], pt1[1], slope])
                 cv.line(src, pt1, pt2, (0, 0, 255), 2, cv.LINE_AA)
-            elif (slope > 1) or (slope < -1):  # 依照斜率歸類為 垂直線
+            elif (slope > 1) or (slope < -1):   # 依照斜率歸類為 垂直線
                 vertical_lines.append([pt1[0], pt1[1], slope])
                 cv.line(src, pt1, pt2, (0, 0, 255), 2, cv.LINE_AA)
 
@@ -106,12 +106,12 @@ def all_quadrants_include_intersection():   # 檢查是不是每個象限都有�
         print("all_quadrants_include_intersection() error!")
         return "Error"
 
-def find_max_d_corners(quadrant):
-    max_d = 0
+def fine_corner_condition(quadrant):   # 判斷水平線有沒有靠近圖片中心，過度遠離的不算；垂直線有沒有遠離圖片中心，過度靠近的不算
+    # max_d = 0
     temp_corner = []
     for point in globals()['quadrant_' + str(f'{quadrant}') + '_corner']:
-        if ((nc/2) - abs(point[0] - (nc/2)) > 50) and (abs(point[1] - (nr/2)) < nr*3/10):  # (距離中心點>max_d)&(距離邊界>40px)&(點不能超出邊界)
-            max_d = math.sqrt((point[0] - nc / 2) ** 2 + (point[1] - nr / 2) ** 2)
+        if (abs(point[0] - (nc/2)) > nc*3/10) and (abs(point[1] - (nr/2)) < nr*3/10):  # (距離中心點>max_d)&(距離邊界>40px)&(點不能超出邊界)
+            # max_d = math.sqrt((point[0] - nc / 2) ** 2 + (point[1] - nr / 2) ** 2)
             temp_corner = point
             print(temp_corner)
     return temp_corner
@@ -123,23 +123,21 @@ def fine_distance_to_edge(x, y):  # 判斷：交點是否位於靠近圖片外�
     #     return False
     return True
 
-def find_4_corners():    # 找出4個角落點
-    final_condition = False
-
+def find_4_corners():   # 找出4個角落點
     while (all_quadrants_include_intersection() == False):
         decrease_threshold_then_redo_houghlines_and_get_intersections()
 
-    for quadrant in range(1, 5):  # 做條件判斷，如果有交點不符合條件，則降低Hough_lines的Threshold，然後全部重新再算一次
-        temp_corner = find_max_d_corners(quadrant)
+    for quadrant in range(1, 5):   # 做條件判斷，如果有交點不符合條件，則降低Hough_lines的Threshold，然後全部重新再算一次
+        temp_corner = fine_corner_condition(quadrant)
         while (fine_distance_to_edge(temp_corner[0], temp_corner[1]) == False):
             decrease_threshold_then_redo_houghlines_and_get_intersections()
-            temp_corner = find_max_d_corners(quadrant)
+            temp_corner = fine_corner_condition(quadrant)
         corner_each_quadrant.append(temp_corner)
 
-    for corner in corner_each_quadrant:  # 畫出4個角落點
+    for corner in corner_each_quadrant:   # 畫出4個角落點
         cv.circle(src, (int(corner[0]), int(corner[1])), 15, (0, 255, 0), -1)
 
-def Perspective_transform():    # 透視轉換
+def Perspective_transform():   # 透視轉換
     pts1 = np.float32(
         [corner_each_quadrant[0], corner_each_quadrant[1], corner_each_quadrant[2], corner_each_quadrant[3]])
     pts2 = np.float32([[corner_each_quadrant[0][0] - corner_each_quadrant[1][0], 0], [0, 0],
@@ -150,7 +148,7 @@ def Perspective_transform():    # 透視轉換
     img2 = cv.warpPerspective(src2, T, (corner_each_quadrant[0][0] - corner_each_quadrant[1][0], corner_each_quadrant[2][1] - corner_each_quadrant[1][1]))
     return img2
 
-def decrease_threshold_then_redo_houghlines_and_get_intersections():
+def decrease_threshold_then_redo_houghlines_and_get_intersections():   # 當一整套流程走下來沒有辦法找到有效的四點時，就執行這個function（=降threshold再走一次整套流程）
     global hough_lines_threshold
     global gray_normalized_kernel_horizontal
     global gray_normalized_kernel_vertical
@@ -161,7 +159,7 @@ def decrease_threshold_then_redo_houghlines_and_get_intersections():
     quadrant_categorization()
 
 
-def houghlines_blackboard(src_from_webcam):
+def houghlines_blackboard(file_name, src_from_webcam):
     global filter_size
     global horizontal_lines
     global vertical_lines
@@ -200,13 +198,19 @@ def houghlines_blackboard(src_from_webcam):
     # img.shape => (rows, columns)
     src2 = src.copy()
 
-    Hough_lines(hough_lines_threshold, gray_normalized_kernel_vertical, "vertical")  # 霍夫直線偵測 找垂直線
-    Hough_lines(hough_lines_threshold, gray_normalized_kernel_horizontal, "horizontal")  # 霍夫直線偵測 找水平線
-    Get_intersection_points()
-    quadrant_categorization()
-    find_4_corners()
-    decrease_threshold_then_redo_houghlines_and_get_intersections()
-    result = Perspective_transform()  # 透視轉換
+    Hough_lines(hough_lines_threshold, gray_normalized_kernel_vertical, "vertical")   # 霍夫直線偵測 找垂直線
+    Hough_lines(hough_lines_threshold, gray_normalized_kernel_horizontal, "horizontal")   # 霍夫直線偵測 找水平線
+    Get_intersection_points()   # 拿直線方程式取交點
+    quadrant_categorization()   # 將所有的交點分類成4個象限
+    find_4_corners()   # 找出4個角落點
+    decrease_threshold_then_redo_houghlines_and_get_intersections()   # 降threshold，再走一次偵測流程
+    result = Perspective_transform()   # 透視轉換
+
+    cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized.jpg", gray_normalized)  # 生成 灰階圖
+    cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_horizontal_" + f'{filter_size}' + ".jpg", gray_normalized_kernel_horizontal)  # 生成 水平卷積 的結果圖
+    cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_vertical_" + f'{filter_size}' + ".jpg", gray_normalized_kernel_vertical)  # 生成 垂直卷積 的結果圖
+    cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_canny_houghlines_" + f'{canny_threshold}' + "-" + f'{canny_threshold}' + "-" + f'{hough_lines_threshold}' + ".jpg", src)  # 生成 霍夫直線偵測 的結果圖
+    cv.imwrite("developing_images\\" + f'{file_name}' + "_final_result.jpg", result)  # 生成 透視轉換後 的結果圖
 
     print("\nHough_lines Finished.\n")
     print("\"" + f'{file_name}' + "\" DONE.\n-----")
@@ -225,14 +229,15 @@ if __name__ == "__main__":
     start = time.time()  # 記錄開始執行程式的時間
     file_name = "FFC01EC6-E6F4-4FFF-BBD8-DFC4D0E0A6E1-16.9"
     img_to_houghlines = cv.imread("developing_images\\" + f'{file_name}' + ".jpg", 1)
-    houghlines_blackboard(img_to_houghlines)
+    houghlines_blackboard(file_name, img_to_houghlines)
 
-    cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_canny_houghlines_" + f'{canny_threshold}' + "-" + f'{canny_threshold}' + "-" + f'{hough_lines_threshold}' + ".jpg",src)
-    cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized.jpg", gray_normalized)  # 生成 灰階圖
-    cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_horizontal_" + f'{filter_size}' + ".jpg", gray_normalized_kernel_horizontal)  # 生成 水平卷積 的結果圖
-    cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_vertical_" + f'{filter_size}' + ".jpg", gray_normalized_kernel_vertical)  # 生成 垂直卷積 的結果圖
-    cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_canny_houghlines_" + f'{canny_threshold}' + "-" + f'{canny_threshold}' + "-" + f'{hough_lines_threshold}' + ".jpg", src)  # 生成 霍夫直線偵測 的結果圖
-    cv.imwrite("developing_images\\" + f'{file_name}' + "_final_result.jpg", result)  # 生成 透視轉換後 的結果圖
+    # cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_canny_houghlines_" + f'{canny_threshold}' + "-" + f'{canny_threshold}' + "-" + f'{hough_lines_threshold}' + ".jpg",src)
+    # cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized.jpg", gray_normalized)  # 生成 灰階圖
+    # cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_horizontal_" + f'{filter_size}' + ".jpg", gray_normalized_kernel_horizontal)  # 生成 水平卷積 的結果圖
+    # cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_vertical_" + f'{filter_size}' + ".jpg", gray_normalized_kernel_vertical)  # 生成 垂直卷積 的結果圖
+    # cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_canny_houghlines_" + f'{canny_threshold}' + "-" + f'{canny_threshold}' + "-" + f'{hough_lines_threshold}' + ".jpg", src)  # 生成 霍夫直線偵測 的結果圖
+    # cv.imwrite("developing_images\\" + f'{file_name}' + "_final_result.jpg", result)  # 生成 透視轉換後 的結果圖
+
     # cv.imwrite("images_todo\\results\\" + f'{file_name}' + "_final_result.jpg", img2)  # 在"images_todo/results"資料夾內生成 透視轉換後 的結果圖
 
     end = time.time()  # 記錄程式結束執行的時間
