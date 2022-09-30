@@ -1,5 +1,5 @@
-from util_manual_corner_select import corner_selector
+# from util_manual_corner_select import corner_selector
+from util_houghlines_blackboard import *
 
 
-
-print(corner_selector())
+houghlines_blackboard()
