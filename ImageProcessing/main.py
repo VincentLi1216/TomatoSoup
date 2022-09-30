@@ -1,4 +1,4 @@
-from util_dst_cs_M import corner_selector
+from util_manual_corner_select import corner_selector
 
 
 
