@@ -10,7 +10,7 @@ from crop import *
 
 file_name = None
 filter_size = 0
-images = []
+images, gray_normalized, result = [], [], []
 horizontal_lines, vertical_lines, intersection_points, corner_each_quadrant = [], [], [], []
 quadrant_1_corner, quadrant_2_corner, quadrant_3_corner, quadrant_4_corner = [], [], [], []
 gray_normalized_kernel_horizontal, gray_normalized_kernel_vertical = None, None
@@ -25,7 +25,7 @@ def return_time():    # 回傳當前時間
     return str("{:04d}{:02d}{:02d}_{:02d}{:02d}{:02d}".format(now.tm_year, now.tm_mon, now.tm_mday, now.tm_hour, now.tm_min, now.tm_sec))
 
 def Hough_lines(hough_lines_threshold, img, horizontal_or_vertical):  # 做 霍夫直線偵測
-    global src
+    # global src
     global file_name
     img = np.uint8(img)
     dst = cv.Canny(img, canny_threshold, canny_threshold, None, 3)  # 霍夫直線偵測包含Canny
@@ -59,7 +59,7 @@ def Hough_lines(hough_lines_threshold, img, horizontal_or_vertical):  # 做 霍�
             elif (slope > 1) or (slope < -1):  # 依照斜率歸類為 垂直線
                 vertical_lines.append([pt1[0], pt1[1], slope])
                 cv.line(src, pt1, pt2, (0, 0, 255), 2, cv.LINE_AA)
-    cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_canny_houghlines_" + f'{canny_threshold}' + "-" + f'{canny_threshold}' + "-" + f'{hough_lines_threshold}' + ".jpg",src)
+
 
 
 def Get_intersection_points():    # 拿直線方程式取交點
@@ -147,8 +147,7 @@ def Perspective_transform():    # 透視轉換
                        [corner_each_quadrant[0][0] - corner_each_quadrant[1][0],
                         corner_each_quadrant[2][1] - corner_each_quadrant[1][1]]])
     T = cv.getPerspectiveTransform(pts1, pts2)
-    img2 = cv.warpPerspective(src2, T, (
-    corner_each_quadrant[0][0] - corner_each_quadrant[1][0], corner_each_quadrant[2][1] - corner_each_quadrant[1][1]))
+    img2 = cv.warpPerspective(src2, T, (corner_each_quadrant[0][0] - corner_each_quadrant[1][0], corner_each_quadrant[2][1] - corner_each_quadrant[1][1]))
     return img2
 
 def decrease_threshold_then_redo_houghlines_and_get_intersections():
@@ -162,8 +161,7 @@ def decrease_threshold_then_redo_houghlines_and_get_intersections():
     quadrant_categorization()
 
 
-def crop_blackboard(filename):
-    global file_name
+def houghlines_blackboard(src_from_webcam):
     global filter_size
     global horizontal_lines
     global vertical_lines
@@ -181,31 +179,22 @@ def crop_blackboard(filename):
     global src
     global src2
     global images
+    global gray_normalized
+    global result
 
-    file_name = filename
+    src = src_from_webcam
+
+    # filter_size預設為33
     filter_size = 33
-    # images = []
-    # horizontal_lines, vertical_lines, intersection_points, corner_each_quadrant = [], [], [], []
-    # quadrant_1_corner, quadrant_2_corner, quadrant_3_corner, quadrant_4_corner = [], [], [], []
-    # gray_normalized_kernel_horizontal, gray_normalized_kernel_vertical = None, None
-    # nr, nc = 0, 0
-    # hough_lines_threshold = 600  # Hough_lines的Threshold 預設為 600
-    # canny_threshold = 80  # Canny的Threshold 預設為 60
-    # src, src2 = None, None
 
     print("-----\nFilename:", file_name)
 
-    gray_normalized = histogram_equalization(file_name)  # 呼叫副程式做 直方圖標準化
-    cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized.jpg", gray_normalized)  # 生成 灰階圖
-
+    gray_normalized = histogram_equalization(src)  # 呼叫副程式做 直方圖標準化
     gray_normalized_kernel_horizontal, gray_normalized_kernel_vertical = convolution(file_name, gray_normalized, filter_size)  # 呼叫副程式做 卷積
     gray_normalized_kernel_horizontal = crop(gray_normalized_kernel_horizontal)  # 呼叫副程式做 裁切
     gray_normalized_kernel_vertical = crop(gray_normalized_kernel_vertical)  # 呼叫副程式做 裁切
-    cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_horizontal_" + f'{filter_size}' + ".jpg", gray_normalized_kernel_horizontal)  # 生成 水平卷積 的結果圖
-    cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_vertical_" + f'{filter_size}' + ".jpg", gray_normalized_kernel_vertical)  # 生成 垂直卷積 的結果圖
 
     print("Hough_lines Starts...\nPlease wait for a few seconds or minutes...\n")
-    src = cv.imread("developing_images\\" + f'{file_name}' + ".jpg", 1)
     src = crop(src)
     nr, nc = src.shape[:2]
     # img.shape => (rows, columns)
@@ -217,16 +206,12 @@ def crop_blackboard(filename):
     quadrant_categorization()
     find_4_corners()
     decrease_threshold_then_redo_houghlines_and_get_intersections()
-    img2 = Perspective_transform()  # 透視轉換
-
-    cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_canny_houghlines_" + f'{canny_threshold}' + "-" + f'{canny_threshold}' + "-" + f'{hough_lines_threshold}' + ".jpg", src)  # 生成 霍夫直線偵測 的結果圖
-    cv.imwrite("developing_images\\" + f'{file_name}' + "_final_result.jpg", img2)  # 生成 透視轉換後 的結果圖
-    # cv.imwrite("images_todo\\results\\" + f'{file_name}' + "_final_result.jpg", img2)  # 在"images_todo/results"資料夾內生成 透視轉換後 的結果圖
+    result = Perspective_transform()  # 透視轉換
 
     print("\nHough_lines Finished.\n")
     print("\"" + f'{file_name}' + "\" DONE.\n-----")
 
-    return img2
+    return result
 
 
 if __name__ == "__main__":
@@ -236,9 +221,23 @@ if __name__ == "__main__":
             filter_size = int(input("Convolution Filter Size (n*n)\nDefault: 33*33\nPlease type in the n you want(odd and >=5): "))    # 使用者輸入卷積的Filter大小
         else:
             break
+
+    start = time.time()  # 記錄開始執行程式的時間
     file_name = "FFC01EC6-E6F4-4FFF-BBD8-DFC4D0E0A6E1-16.9"
-    crop_blackboard(file_name)
+    img_to_houghlines = cv.imread("developing_images\\" + f'{file_name}' + ".jpg", 1)
+    houghlines_blackboard(img_to_houghlines)
+
+    cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_canny_houghlines_" + f'{canny_threshold}' + "-" + f'{canny_threshold}' + "-" + f'{hough_lines_threshold}' + ".jpg",src)
+    cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized.jpg", gray_normalized)  # 生成 灰階圖
+    cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_horizontal_" + f'{filter_size}' + ".jpg", gray_normalized_kernel_horizontal)  # 生成 水平卷積 的結果圖
+    cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_vertical_" + f'{filter_size}' + ".jpg", gray_normalized_kernel_vertical)  # 生成 垂直卷積 的結果圖
+    cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_canny_houghlines_" + f'{canny_threshold}' + "-" + f'{canny_threshold}' + "-" + f'{hough_lines_threshold}' + ".jpg", src)  # 生成 霍夫直線偵測 的結果圖
+    cv.imwrite("developing_images\\" + f'{file_name}' + "_final_result.jpg", result)  # 生成 透視轉換後 的結果圖
+    # cv.imwrite("images_todo\\results\\" + f'{file_name}' + "_final_result.jpg", img2)  # 在"images_todo/results"資料夾內生成 透視轉換後 的結果圖
+
+    end = time.time()  # 記錄程式結束執行的時間
+    print("Code Runtime: {:.1f}s".format(end - start))  # 印出程式執行所花的時間
+
     # cv2.imshow('My Image', src)
     # cv2.waitKey(0)
     # cv2.destroyAllWindows()
-    # crop_blackboard(img)

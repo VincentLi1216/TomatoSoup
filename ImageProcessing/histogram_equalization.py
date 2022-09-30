@@ -5,8 +5,8 @@
 import numpy as np
 import cv2 as cv
 
-def histogram_equalization(file_name):
-    img1 = cv.imread("developing_images\\"+f'{file_name}'+".jpg", 0)
+def histogram_equalization(img1):
+    img1 = cv.cvtColor( img1, cv.COLOR_BGR2GRAY )
     nr, nc = img1.shape[:2]
     # img.shape => (rows, columns)
     print("Image Size: {} x {} (Horizontal x Vertical)".format(nc, nr))    # 印出圖片尺寸
