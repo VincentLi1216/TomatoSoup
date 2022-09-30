@@ -3,9 +3,9 @@ import numpy as np
 
 def perspective_transform(img, dots_coord):
     points1 = np.float32([dots_coord[0], dots_coord[1], dots_coord[2], dots_coord[3]])
-    points2 = np.float32([[3541, 0], [3541, 887], [0, 887], [0,0]])
+    points2 = np.float32([[3700, 0], [3700, 1000], [0, 1000], [0,0]])
 
-    img_size = (3541, 887)
+    img_size = (3700, 1000)
 
     M = cv2.getPerspectiveTransform(points1, points2)
 
@@ -15,6 +15,8 @@ def perspective_transform(img, dots_coord):
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+
+    return warped
 
 
 

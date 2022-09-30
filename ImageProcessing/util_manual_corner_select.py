@@ -9,6 +9,7 @@ tolerance = 30  # 重新選點時的最大誤差
 index = None  # 錯誤點對應到的dots[]參數
 fix_phase = 0  # 目前修正階段, phase % 2 = 1代表已經選擇好錯誤點, phase%2 = 0代表起始狀態或錯誤以被修正
 frame = distorion_correction()
+cv2.imwrite("original.jpg", frame)
 def corner_selector():
     global dots
     global dot_num
@@ -120,10 +121,9 @@ def corner_selector():
     print(sorted_dots)
 
 
-    perspective_transform(origin_frame, sorted_dots)
+    fixed_img = perspective_transform(origin_frame, sorted_dots)
 
-
-
+    cv2.imwrite("prc_img.jpg", fixed_img)
     # return sorted_dots
 
 
