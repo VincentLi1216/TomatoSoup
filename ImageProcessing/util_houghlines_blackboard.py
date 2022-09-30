@@ -4,9 +4,9 @@ import glob
 import time
 import cv2 as cv
 import numpy as np
-from histogram_equalization import *
-from convolution import *
-from crop import *
+from util_histogram_equalization import *
+from util_convolution import *
+from util_crop import *
 
 file_name = None
 filter_size = 0
