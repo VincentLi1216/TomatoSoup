@@ -17,6 +17,7 @@ frame = None
 def get_frame():
     global frame
     frame = distorion_correction()
+    save_img(frame, "orig")
 
 def corner_selector():
     global dots
