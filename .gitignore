@@ -23,4 +23,3 @@ config/database.yml
 
 # 忽略__pycache__資料夾
 ImageProcessing/__pycache__/
-ImageProcessing/develop_images/*
