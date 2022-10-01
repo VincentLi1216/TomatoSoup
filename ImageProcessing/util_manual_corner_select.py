@@ -1,6 +1,8 @@
 import cv2
-from util_distortion_correction import distorion_correction
-from util_perspective_transform import perspective_transform
+from util_perspective_transform import *
+from util_distortion_correction import *
+from util_save_img import *
+
 
 # 變數初始化
 dots = []  # 記錄座標的空串列
@@ -8,14 +10,24 @@ dot_num = 0  # 已經寫入的dot數
 tolerance = 30  # 重新選點時的最大誤差
 index = None  # 錯誤點對應到的dots[]參數
 fix_phase = 0  # 目前修正階段, phase % 2 = 1代表已經選擇好錯誤點, phase%2 = 0代表起始狀態或錯誤以被修正
-frame = distorion_correction()
-cv2.imwrite("original.jpg", frame)
+# frame = distorion_correction()
+origin_frame = None
+frame = None
+
+def get_frame():
+    global frame
+    frame = distorion_correction()
+
 def corner_selector():
     global dots
     global dot_num
     global index
     global fix_phase
     global origin_frame
+
+    get_frame()
+
+    # frame = distorion_correction()
 
     origin_frame = frame.copy()  # 將原始frame進行快照，以便未來修正點可以清除後重新畫線
 
@@ -123,8 +135,11 @@ def corner_selector():
 
     fixed_img = perspective_transform(origin_frame, sorted_dots)
 
-    cv2.imwrite("prc_img.jpg", fixed_img)
-    # return sorted_dots
+    # cv2.imwrite("prc_img.jpg", fixed_img)
+    save_img(fixed_img, "fixed")
+    return fixed_img
+
+
 
 
 if __name__ == "__main__":
