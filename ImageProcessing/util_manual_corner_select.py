@@ -17,7 +17,7 @@ frame = None
 def get_frame():
     global frame
     frame = distorion_correction()
-    save_img(frame, "orig")
+    # save_img(frame, "orig")
 
 def corner_selector():
     global dots
@@ -131,13 +131,13 @@ def corner_selector():
         sorted_dots.append(dots[1])
         sorted_dots.append(dots[0])
 
-    print(sorted_dots)
+    # print(sorted_dots)
 
 
     fixed_img = perspective_transform(origin_frame, sorted_dots)
 
     # cv2.imwrite("prc_img.jpg", fixed_img)
-    save_img(fixed_img, "fixed")
+    # save_img(fixed_img, "fixed")
     return fixed_img
 
 
