@@ -1,11 +1,11 @@
 import paramiko
-import SSH_PSW
+import SSH_KEY
 
 
 
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-ssh.connect(hostname=SSH_PSW.hostname, username=SSH_PSW.username, password=SSH_PSW.password, port=SSH_PSW.port)
+ssh.connect(hostname=SSH_KEY.hostname, username=SSH_KEY.username, password=SSH_KEY.password, port=SSH_KEY.port)
 sftp_client=ssh.open_sftp()
 print(dir(sftp_client))
 
