@@ -2,11 +2,12 @@
 
 # 忽略 secret.yml 檔案
 secret.yml
-SSH_KEY.py
+
 
 
 # 忽略 config 目錄下的 database.yml 檔案
 config/database.yml
+ImageProcessing/SSH_KEY.py
 
 # 忽略所有 db 目錄下附檔名是 .sqlite3 的檔案
 /db/*.sqlite3
