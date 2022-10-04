@@ -89,6 +89,6 @@ def server_command(command):
 
 if __name__ == "__main__":
     # put("/Users/lishande/Pictures/桌布/pexels-sanaan-mazhar-3075993.jpg", "/home/ubuntu/static/wallpaper.jpg")
-    remove("/home/ubuntu/static/final_10-02-2022_23:50:53.jpg")
-    # get("/home/ubuntu/static/wallpaper.jpg", "imgs/wallpaper.jpg")
+    # remove("/home/ubuntu/static/final_10-02-2022_23:50:53.jpg")
+    get("/home/ubuntu/static/wallpaper.jpg", "imgs/wallpaper.jpg")
 
