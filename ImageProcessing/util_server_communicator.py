@@ -2,6 +2,19 @@ import paramiko
 import SSH_KEY
 import time
 
+def warning(warning_mes):
+    print()
+    print()
+    print()
+    print("-----------------WARNING-----------------")
+    print()
+    print(warning_mes)
+    print()
+    print("-------------------END-------------------")
+    print()
+    print()
+    print()
+
 def trans_status(now, total):
     start_time = time.time()
     file_size = total/1000000
@@ -26,66 +39,89 @@ def trans_status(now, total):
 
 
 def get(file, pc_path):
-    ssh = paramiko.SSHClient()
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(hostname=SSH_KEY.hostname, username=SSH_KEY.username, password=SSH_KEY.password, port=SSH_KEY.port)
-    sftp_client = ssh.open_sftp()
 
-    ##下載檔案
-    sftp_client.get(file, pc_path, callback = trans_status)
+    try:
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(hostname=SSH_KEY.hostname, username=SSH_KEY.username, password=SSH_KEY.password, port=SSH_KEY.port)
+        sftp_client = ssh.open_sftp()
 
+        ##下載檔案
+        sftp_client.get(file, pc_path, callback=trans_status)
 
-    sftp_client.close()
-    ssh.close()
+        sftp_client.close()
+        ssh.close()
+    except:
+        warning("Can NOT get the file from the server!")
+
 
 def put(file, server_path):
-    ssh = paramiko.SSHClient()
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(hostname=SSH_KEY.hostname, username=SSH_KEY.username, password=SSH_KEY.password, port=SSH_KEY.port)
-    sftp_client = ssh.open_sftp()
 
-    #上傳檔案
-    sftp_client.put(file, server_path, callback = trans_status)
 
-    sftp_client.close()
-    ssh.close()
+    try:
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(hostname=SSH_KEY.hostname, username=SSH_KEY.username, password=SSH_KEY.password, port=SSH_KEY.port)
+        sftp_client = ssh.open_sftp()
+
+        # 上傳檔案
+        sftp_client.put(file, server_path, callback=trans_status)
+
+        sftp_client.close()
+        ssh.close()
+    except:
+        warning("Can NOT put the file to the server!")
+
 
 def remove(file):
-    ssh = paramiko.SSHClient()
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(hostname=SSH_KEY.hostname, username=SSH_KEY.username, password=SSH_KEY.password, port=SSH_KEY.port)
-    sftp_client = ssh.open_sftp()
 
-    # 刪除檔案
-    sftp_client.remove(file)
+    try:
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(hostname=SSH_KEY.hostname, username=SSH_KEY.username, password=SSH_KEY.password, port=SSH_KEY.port)
+        sftp_client = ssh.open_sftp()
 
-    sftp_client.close()
-    ssh.close()
+        # 刪除檔案
+        sftp_client.remove(file)
+
+        sftp_client.close()
+        ssh.close()
+    except:
+        warning("Can NOT remove the file from the server!")
 
 
 def mkdir(folder_name):
-    ssh = paramiko.SSHClient()
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(hostname=SSH_KEY.hostname, username=SSH_KEY.username, password=SSH_KEY.password, port=SSH_KEY.port)
-    sftp_client = ssh.open_sftp()
 
-    # 製作資料夾
-    ssh.exec_command("mkdir /home/ubuntu/static/" + folder_name)
+    try:
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(hostname=SSH_KEY.hostname, username=SSH_KEY.username, password=SSH_KEY.password, port=SSH_KEY.port)
+        sftp_client = ssh.open_sftp()
 
-    sftp_client.close()
-    ssh.close()
+        # 製作資料夾
+        ssh.exec_command("mkdir /home/ubuntu/static/" + folder_name)
+
+        sftp_client.close()
+        ssh.close()
+    except:
+        warning("Can NOT mkdir from the server!")
 
 def server_command(command):
-    ssh = paramiko.SSHClient()
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(hostname=SSH_KEY.hostname, username=SSH_KEY.username, password=SSH_KEY.password, port=SSH_KEY.port)
-    sftp_client = ssh.open_sftp()
 
-    # 伺服器執行指令
-    ssh.exec_command(command)
 
-    sftp_client.close()
-    ssh.close()
+    try:
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(hostname=SSH_KEY.hostname, username=SSH_KEY.username, password=SSH_KEY.password, port=SSH_KEY.port)
+        sftp_client = ssh.open_sftp()
+
+        # 伺服器執行指令
+        ssh.exec_command(command)
+
+        sftp_client.close()
+        ssh.close()
+    except:
+        warning("Can NOT execute the command from the server!")
 
 if __name__ == "__main__":
     # put("/Users/lishande/Pictures/桌布/pexels-sanaan-mazhar-3075993.jpg", "/home/ubuntu/static/wallpaper.jpg")
