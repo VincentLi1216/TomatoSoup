@@ -4,8 +4,16 @@ from util_warning import *
 def put_json_data(file_name, dict):
 
     try:
+        # 取代相對應鍵的值
+        with open(file_name) as f:
+            data = json.load(f)
+            if data[dict[0]] != None:
+                data[dict[0]] = dict[1]
+            else:
+                data = {dict[0]: dict[0]}
+
         # Serializing json
-        json_object = json.dumps(dict, indent=4)
+        json_object = json.dumps(data, indent=4)
 
         # Writing to sample.json
         with open(file_name, "w") as outfile:
@@ -21,6 +29,7 @@ def get_json_data(file_name, key):
             return data[key]
     except:
         warning("Can NOT read from the json file!")
+
 
 
 if __name__ == "__main__":

@@ -32,12 +32,46 @@ def corner_selector():
 
     origin_frame = frame.copy()  # 將原始frame進行快照，以便未來修正點可以清除後重新畫線
 
+
+
+
+
+
+    dots = get_json_data("user_pref.json", "corners")
+
+
+
+    if len(dots) == 4:
+        dot_num = 4
+
+        print(dots)
+
+        for i in range(4):
+
+
+            cv2.circle(frame, (dots[i][0], dots[i][1]), 10, (0, 255, 0), -1)  # 在點擊的位置，繪製（藍色）圓形
+
+        for i in range(3):
+            cv2.line(frame, (dots[i][0], dots[i][1]), (dots[i+1][0], dots[i+1][1]), (0, 255, 0), 2)  # 取得最後的兩個座標，繪製直線
+
+        cv2.line(frame, (dots[0][0], dots[0][1]), (dots[3][0], dots[3][1]), (0, 255, 0), 2)  # 取得最後的兩個座標，繪製直線
+
+        cv2.imshow('cam_capture', frame)
+
+
+
+
+
     def show_xy(event, x, y, flags, param):
         global dot_num
         global index
         global fix_phase
         global origin_frame
         global frame
+
+
+
+
 
         if event == 1:
 
@@ -130,9 +164,9 @@ def corner_selector():
     else:
         sorted_dots.append(dots[1])
         sorted_dots.append(dots[0])
-
     # print(sorted_dots)
 
+    put_json_data("user_pref.json", ["corners", sorted_dots])
 
     fixed_img = perspective_transform(origin_frame, sorted_dots)
 
