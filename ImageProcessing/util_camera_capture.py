@@ -47,4 +47,3 @@ def cam_cap():
     cv2.destroyAllWindows()
 
     return frame
-    # return cv2.imread("imgs/prc_img.jpg")
