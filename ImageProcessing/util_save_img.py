@@ -3,13 +3,13 @@ import cv2
 import os
 
 t = time.localtime()
-date = time.strftime("%m-%d-%Y/", t)
+date = str(time.strftime("%m-%d-%Y", t))
 
 def save_img(img, file_name = ""):
 
     name = file_name + time.strftime("_%m-%d-%Y_%H:%M:%S.jpg", t)
 
-    folder_path = "imgs/" + date
+    folder_path = "imgs/" + date + "/"
 
     #如果沒有當天的資料夾的話，就自己創一個
     if not os.path.isdir(folder_path):

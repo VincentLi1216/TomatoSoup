@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-from camera_capture import *
+from util_camera_capture import *
 
 def distorion_correction():
 

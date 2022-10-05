@@ -1,19 +1,9 @@
 import paramiko
 import SSH_KEY
 import time
+from util_warning import *
 
-def warning(warning_mes):
-    print()
-    print()
-    print()
-    print("-----------------WARNING-----------------")
-    print()
-    print(warning_mes)
-    print()
-    print("-------------------END-------------------")
-    print()
-    print()
-    print()
+
 
 def trans_status(now, total):
     start_time = time.time()
@@ -59,6 +49,11 @@ def put(file, server_path):
 
 
     try:
+        # 嘗試新增新資料夾
+        t = time.localtime()
+        date = str(time.strftime("%m-%d-%Y", t))
+        mkdir(date)
+
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(hostname=SSH_KEY.hostname, username=SSH_KEY.username, password=SSH_KEY.password, port=SSH_KEY.port)
@@ -124,7 +119,8 @@ def server_command(command):
         warning("Can NOT execute the command from the server!")
 
 if __name__ == "__main__":
-    # put("/Users/lishande/Pictures/桌布/pexels-sanaan-mazhar-3075993.jpg", "/home/ubuntu/static/wallpaper.jpg")
+    # put("imgs/10-04-2022/final_10-04-2022_15:59:34.jpg", "/home/ubuntu/static/10-04-2022/final_10-04-2022_15:59:34.jpg")
     # remove("/home/ubuntu/static/final_10-02-2022_23:50:53.jpg")
-    get("/home/ubuntu/static/wallpaper.jpg", "imgs/wallpaper.jpg")
+    # get("/home/ubuntu/static/wallpaper.jpg", "imgs/wallpaper.jpg")
+    server_command("rm -r /home/ubuntu/static/10-04-2022")
 
