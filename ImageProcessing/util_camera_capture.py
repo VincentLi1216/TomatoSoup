@@ -1,5 +1,9 @@
 import cv2
 from util_json import *
+from util_server_communicator import *
+import time
+import glob
+import os
 
 def cam_cap():
     cv2.namedWindow("TomatoSoup - Press \"Q\" to capture")
@@ -10,10 +14,24 @@ def cam_cap():
     use_default_cam = None
 
     if default_cam != None:
-        while use_default_cam == None and use_default_cam != "y" and use_default_cam != "n":
+        while use_default_cam != "y" and use_default_cam != "n" and use_default_cam != "d":
             use_default_cam = input("Would you like to use cam " + str(default_cam) + " again(y/n)?")
         if use_default_cam == "y":
             input_camera = default_cam
+        elif use_default_cam == "d":
+            t = time.localtime()
+            date = str(time.strftime("%m-%d-%Y", t))
+
+            list_of_files = glob.glob("imgs/" + date + "/*.jpg")  #取得當天資料夾中所有的.jpg
+            latest_file = max(list_of_files, key=os.path.getctime)  #取得資料夾中最新的檔案
+            os.remove(latest_file)  #刪除本機端檔案
+            latest_file = os.path.basename(latest_file)  #取得檔案名稱就好，不需要路徑
+
+            remove("/home/ubuntu/static/" + date + "/" + latest_file)  #刪除伺服器端檔案
+
+            os._exit(0)
+
+            return
         else:
             input_camera = None  # user enter camera index
             while input_camera == None or int(input_camera) > 3 or int(input_camera) < 0:

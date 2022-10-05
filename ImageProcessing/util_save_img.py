@@ -16,7 +16,7 @@ def save_img(img, file_name = ""):
         os.mkdir(folder_path)
 
     cv2.imwrite(folder_path + name, img)
-    print(name, "saved")
+    print(name, "has been saved locally")
     return name
 
 if __name__ == "__main__":

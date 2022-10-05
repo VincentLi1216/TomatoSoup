@@ -79,6 +79,8 @@ def remove(file):
         # 刪除檔案
         sftp_client.remove(file)
 
+        print(file + " has been removed from the server")
+
         sftp_client.close()
         ssh.close()
     except:
