@@ -44,8 +44,6 @@ def corner_selector():
     if len(dots) == 4:
         dot_num = 4
 
-        print(dots)
-
         for i in range(4):
 
 

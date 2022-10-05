@@ -24,6 +24,13 @@ def cam_cap():
 
             list_of_files = glob.glob("imgs/" + date + "/*.jpg")  #取得當天資料夾中所有的.jpg
             latest_file = max(list_of_files, key=os.path.getctime)  #取得資料夾中最新的檔案
+
+            img = cv2.imread(latest_file)
+            cv2.imshow("TomatoSoup - Press \"Q\" to confirm the deletion", img)
+            cv2.setWindowProperty("TomatoSoup - Press \"Q\" to confirm the deletion", cv2.WND_PROP_TOPMOST, 1)  ##永遠置頂窗口
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
+
             os.remove(latest_file)  #刪除本機端檔案
             latest_file = os.path.basename(latest_file)  #取得檔案名稱就好，不需要路徑
 
