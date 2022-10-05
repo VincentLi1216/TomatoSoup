@@ -2,7 +2,8 @@ import cv2
 from util_json import *
 
 def cam_cap():
-    cv2.namedWindow("window1")
+    cv2.namedWindow("TomatoSoup - Press \"Q\" to capture")
+    cv2.setWindowProperty("TomatoSoup - Press \"Q\" to capture", cv2.WND_PROP_TOPMOST, 1) ##永遠置頂窗口
 
     default_cam = get_json_data("user_pref.json", "last_used_camera")
 
@@ -35,7 +36,7 @@ def cam_cap():
     while True:
 
         if frame is not None:
-            cv2.imshow("window1", frame)
+            cv2.imshow("TomatoSoup - Press \"Q\" to capture", frame)
         rval, frame = vc.read()
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -43,7 +44,6 @@ def cam_cap():
 
 
     vc.release()
-    # cv2.destroyWindow("window1")
     cv2.destroyAllWindows()
 
     return frame

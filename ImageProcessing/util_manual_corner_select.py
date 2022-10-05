@@ -56,7 +56,7 @@ def corner_selector():
 
         cv2.line(frame, (dots[0][0], dots[0][1]), (dots[3][0], dots[3][1]), (0, 255, 0), 2)  # 取得最後的兩個座標，繪製直線
 
-        cv2.imshow('cam_capture', frame)
+        cv2.imshow('TomatoSoup - Press \"Q\" to confirm corners', frame)
 
 
 
@@ -79,7 +79,7 @@ def corner_selector():
 
                 # 將視窗回復原始樣貌
                 frame = origin_frame.copy()
-                cv2.imshow('cam_capture', frame)
+                cv2.imshow('TomatoSoup - Press \"Q\" to confirm corners', frame)
 
                 dots[index] = [x, y]  # 將錯誤點座標改成修正點
 
@@ -101,7 +101,7 @@ def corner_selector():
 
                 index = None
 
-                cv2.imshow('cam_capture', frame)
+                cv2.imshow('TomatoSoup - Press \"Q\" to confirm corners', frame)
 
             if dot_num == 4 and fix_phase % 2 == 0:  # 第五點（錯誤點）確認
                 for i in range(4):
@@ -109,7 +109,7 @@ def corner_selector():
                         index = i
                         # print(i)
                         cv2.circle(frame, (dots[index][0], dots[index][1]), 10, (255, 0, 0), -1)  # 在點擊的位置，繪製（藍色）圓形
-                        cv2.imshow('cam_capture', frame)
+                        cv2.imshow('TomatoSoup - Press \"Q\" to confirm corners', frame)
                         fix_phase += 1
 
                     if index != None:
@@ -121,7 +121,7 @@ def corner_selector():
 
                 dots.append([x, y])  # 記錄座標
                 cv2.circle(frame, (x, y), 10, (0, 0, 255), -1)  # 在點擊的位置，繪製圓形
-                cv2.imshow('cam_capture', frame)
+                cv2.imshow('TomatoSoup - Press \"Q\" to confirm corners', frame)
                 dot_num = len(dots)  # 目前有幾個座標
                 # print(dot_num)
 
@@ -139,10 +139,10 @@ def corner_selector():
                     y2 = dots[dot_num - 1][1]
                     cv2.line(frame, (x1, y1), (x2, y2), (0, 0, 255), 2)  # 取得第一和第四個座標，繪製直線
 
-                cv2.imshow('cam_capture', frame)
+                cv2.imshow('TomatoSoup - Press \"Q\" to confirm corners', frame)
 
-    cv2.imshow('cam_capture', frame)
-    cv2.setMouseCallback('cam_capture', show_xy)
+    cv2.imshow('TomatoSoup - Press \"Q\" to confirm corners', frame)
+    cv2.setMouseCallback('TomatoSoup - Press \"Q\" to confirm corners', show_xy)
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()
