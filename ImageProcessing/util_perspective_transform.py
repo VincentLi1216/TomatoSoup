@@ -13,7 +13,7 @@ def perspective_transform(img, dots_coord):
 
     warped = cv2.warpPerspective(img, M, img_size)  #透視轉換
 
-    cv2.imshow("display", warped)
+    cv2.imshow("TomatoSoup - All Set! Press \"Q\" to upload", warped)
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()
