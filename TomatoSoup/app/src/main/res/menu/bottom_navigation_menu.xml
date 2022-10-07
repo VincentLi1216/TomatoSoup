@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_folder"
+        android:enabled="true"
+        android:icon="@drawable/sl_bar_folder"
+        android:title="@string/text_label_folder"/>
+    <item
+        android:id="@+id/navigation_home"
+        android:enabled="true"
+        android:icon="@drawable/sl_bar_home"
+        android:title="@string/text_label_home"/>
+    <item
+        android:id="@+id/navigation_profile"
+        android:enabled="true"
+        android:icon="@drawable/sl_bar_profile"
+        android:title="@string/text_label_profile"/>
+</menu>

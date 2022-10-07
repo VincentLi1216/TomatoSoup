@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "66028507399",
+    "project_id": "tomatosoup-id",
+    "storage_bucket": "tomatosoup-id.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:66028507399:android:8651e023a6dbf6201db5a2",
+        "android_client_info": {
+          "package_name": "com.delicious.tomatosoup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "66028507399-t6pl69kgk7emln1q0ph84p1uek7na1qk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBs98Fz7_P0s7PDH6JcfPWinEC_wnq11-k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "66028507399-t6pl69kgk7emln1q0ph84p1uek7na1qk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
