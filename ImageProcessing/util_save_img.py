@@ -7,7 +7,7 @@ date = str(time.strftime("%m-%d-%Y", t))
 
 def save_img(img, file_name = ""):
 
-    name = file_name + time.strftime("_%m-%d-%Y_%H:%M:%S.jpg", t)
+    name = file_name + time.strftime("_%m-%d-%Y_%H-%M-%S.jpg", t)
 
     folder_path = "imgs/" + date + "/"
 
