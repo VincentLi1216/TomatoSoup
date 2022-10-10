@@ -3,27 +3,39 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/navigation_home">
+    app:startDestination="@id/HomeFragment">
 
     <fragment
-        android:id="@+id/navigation_home"
+        android:id="@+id/CourseFragment"
+        android:name="com.delicious.tomatosoup.ui.folder.CourseFragment"
+        android:label="@string/course_fragment_label"
+        tools:layout="@layout/fragment_course">
+        <action
+            android:id="@+id/action_CourseFragment_to_DateFragment"
+            app:destination="@id/DateFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/HomeFragment"
         android:name="com.delicious.tomatosoup.ui.home.HomeFragment"
         android:label="@string/home_fragment_label"
-        tools:layout="@layout/fragment_home">
-    </fragment>
+        tools:layout="@layout/fragment_home"/>
 
     <fragment
-        android:id="@+id/navigation_folder"
-        android:name="com.delicious.tomatosoup.ui.folder.FolderFragment"
-        android:label="@string/folder_fragment_label"
-        tools:layout="@layout/fragment_folder">
-    </fragment>
-
-    <fragment
-        android:id="@+id/navigation_profile"
+        android:id="@+id/ProfileFragment"
         android:name="com.delicious.tomatosoup.ui.profile.ProfileFragment"
         android:label="@string/profile_fragment_label"
         tools:layout="@layout/fragment_profile">
+    </fragment>
+
+    <fragment
+        android:id="@+id/DateFragment"
+        android:name="com.delicious.tomatosoup.ui.folder.DateFragment"
+        android:label="@string/date_fragment_label"
+        tools:layout="@layout/fragment_date" >
+        <argument
+            android:name="key_course_id"
+            app:argType="string" />
     </fragment>
 
 </navigation>

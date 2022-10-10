@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/CourseFragment"
+        android:id="@+id/page_folder"
         android:enabled="true"
         android:icon="@drawable/sl_bar_folder"
         android:title="@string/text_label_folder"/>
     <item
-        android:id="@+id/HomeFragment"
+        android:id="@+id/page_home"
         android:enabled="true"
         android:icon="@drawable/sl_bar_home"
         android:title="@string/text_label_home"/>
     <item
-        android:id="@+id/ProfileFragment"
+        android:id="@+id/page_profile"
         android:enabled="true"
         android:icon="@drawable/sl_bar_profile"
         android:title="@string/text_label_profile"/>

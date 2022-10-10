@@ -13,8 +13,6 @@ import androidx.navigation.ui.setupWithNavController
 import com.delicious.tomatosoup.R
 import com.delicious.tomatosoup.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,19 +27,26 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
-        val bottomNavigation: BottomNavigationView = binding.bottomNavigation
 
+        val bottomNavigation = binding.bottomNavigation
 
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.navigation_folder, R.id.navigation_home, R.id.navigation_profile
+                R.id.CourseFragment, R.id.HomeFragment, R.id.ProfileFragment
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         bottomNavigation.setupWithNavController(navController)
-    }
 
+//        navController.addOnDestinationChangedListener { _, destination, _ ->
+//            when(destination.id) {
+//                R.id.DateFragment -> {
+//                    bottomNavigation.selectedItemId = R.id.CourseFragment
+//                }
+//            }
+//        }
+    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
