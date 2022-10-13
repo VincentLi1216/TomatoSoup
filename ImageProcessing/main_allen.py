@@ -28,6 +28,45 @@
 
 
 
-from firebase_communicator import *
+# from firebase_communicator import *
 
-print("stopped")
+# print("stopped")
+
+
+
+# # sander 1013
+#
+# from util_camera_capture import *
+# from util_distortion_correction import *
+# from util_manual_corner_select import *
+# from util_save_img import *
+# from util_houghlines_blackboard import *
+# from util_server_communicator import *
+#
+#
+#
+#
+# file_name = save_img(corner_selector(), "final")
+# server_path = "/home/ubuntu/static/" + date + "/" + file_name
+# put("imgs/" + date + "/" + file_name, server_path)
+
+
+
+
+
+
+
+# mine
+
+from allen_return_time import *
+from util_camera_capture import *
+from util_distortion_correction import *
+# from util_manual_corner_select import *
+from util_houghlines_blackboard import *
+from util_save_img import *
+from util_server_communicator import *
+
+c_time = allen_return_time()
+file_name = save_img( houghlines_blackboard(c_time, distorion_correction()) , "final" )
+server_path = "/home/ubuntu/static/" + date + "/" + file_name
+put("imgs/" + date + "/" + file_name, server_path)
