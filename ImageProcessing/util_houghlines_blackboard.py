@@ -217,7 +217,7 @@ def houghlines_blackboard(file_name, src_from_webcam):
     print("\nHough_lines Finished.\n")
     print("\"" + f'{file_name}' + "\" DONE.\n-----")
 
-    return result
+    return result, corner_each_quadrant
 
 
 if __name__ == "__main__":

@@ -19,7 +19,7 @@ def get_frame():
     frame = distorion_correction()
     # save_img(frame, "orig")
 
-def corner_selector():
+def corner_selector(img = None, input_dots = None):
     global dots
     global dot_num
     global index
@@ -28,7 +28,16 @@ def corner_selector():
 
     get_frame()
 
-    # frame = distorion_correction()
+
+
+
+
+    if img == None and input_dots == None:
+        frame = distorion_correction()
+        dots = get_json_data("user_pref.json", "corners")
+    else:
+        frame = img
+        dots = input_dots
 
     origin_frame = frame.copy()  # 將原始frame進行快照，以便未來修正點可以清除後重新畫線
 
@@ -36,8 +45,6 @@ def corner_selector():
 
 
 
-
-    dots = get_json_data("user_pref.json", "corners")
 
 
 
