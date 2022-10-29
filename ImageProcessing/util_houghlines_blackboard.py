@@ -107,12 +107,14 @@ def all_quadrants_include_intersection():   # 檢查是不是每個象限都有�
         return "Error"
 
 def fine_corner_condition(quadrant):   # 判斷水平線有沒有靠近圖片中心，過度遠離的不算；垂直線有沒有遠離圖片中心，過度靠近的不算
-    # max_d = 0
+    max_d = 0
     temp_corner = []
     for point in globals()['quadrant_' + str(f'{quadrant}') + '_corner']:
-        if (abs(point[0] - (nc/2)) > nc*3/10) and (abs(point[1] - (nr/2)) < nr*3/10):  # (距離中心點>max_d)&(距離邊界>40px)&(點不能超出邊界)
-            # max_d = math.sqrt((point[0] - nc / 2) ** 2 + (point[1] - nr / 2) ** 2)
-            temp_corner = point
+        if (abs(point[0] - (nc/2)) > nc/5) and (abs(point[1] - (nr/2)) > nr/5):  # (距離中心點>max_d)&(距離邊界>40px)&(點不能超出邊界)
+            d = math.sqrt((point[0] - nc / 2) ** 2 + (point[1] - nr / 2) ** 2)
+            if (d >= max_d):
+                temp_corner = point
+                max_d = d
             print(temp_corner)
     return temp_corner
 
