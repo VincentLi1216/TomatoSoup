@@ -69,6 +69,8 @@ from util_manual_corner_select import *
 
 c_time = allen_return_time()
 
+return_img = None
+four_corners = None
 
 try:
     return_img, four_corners = houghlines_blackboard(c_time, distorion_correction())
@@ -77,8 +79,10 @@ try:
     cv2.destroyAllWindows()
     return_img = corner_selector(img=return_img, input_dots=four_corners)
 except:
+    print("iam here")
+    return_img = cv2.imread("imgs/IMG_5433.JPG")
     corner_selector(img=return_img)
 
-file_name = save_img( return_img , "final" )
+file_name = save_img(return_img , "final" )
 server_path = "/home/ubuntu/static/" + date + "/" + file_name
 put("imgs/" + date + "/" + file_name, server_path)

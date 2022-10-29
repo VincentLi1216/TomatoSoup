@@ -190,7 +190,8 @@ def houghlines_blackboard(file_name, src_from_webcam):
     print("-----\nFilename:", file_name)
 
     gray_normalized = histogram_equalization(src)  # 呼叫副程式做 直方圖標準化
-    gray_normalized_kernel_horizontal, gray_normalized_kernel_vertical = convolution(file_name, gray_normalized, filter_size)  # 呼叫副程式做 卷積
+    gray_normalized_kernel_horizontal, gray_normalized_kernel_vertical = convolution(file_name, gray_normalized,
+                                                                                     filter_size)  # 呼叫副程式做 卷積
     gray_normalized_kernel_horizontal = crop(gray_normalized_kernel_horizontal)  # 呼叫副程式做 裁切
     gray_normalized_kernel_vertical = crop(gray_normalized_kernel_vertical)  # 呼叫副程式做 裁切
 
@@ -200,24 +201,29 @@ def houghlines_blackboard(file_name, src_from_webcam):
     # img.shape => (rows, columns)
     src2 = src.copy()
 
-    Hough_lines(hough_lines_threshold, gray_normalized_kernel_vertical, "vertical")   # 霍夫直線偵測 找垂直線
-    Hough_lines(hough_lines_threshold, gray_normalized_kernel_horizontal, "horizontal")   # 霍夫直線偵測 找水平線
-    Get_intersection_points()   # 拿直線方程式取交點
-    quadrant_categorization()   # 將所有的交點分類成4個象限
-    find_4_corners()   # 找出4個角落點
-    decrease_threshold_then_redo_houghlines_and_get_intersections()   # 降threshold，再走一次偵測流程
-    result = Perspective_transform()   # 透視轉換
+    Hough_lines(hough_lines_threshold, gray_normalized_kernel_vertical, "vertical")  # 霍夫直線偵測 找垂直線
+    Hough_lines(hough_lines_threshold, gray_normalized_kernel_horizontal, "horizontal")  # 霍夫直線偵測 找水平線
+    Get_intersection_points()  # 拿直線方程式取交點
+    quadrant_categorization()  # 將所有的交點分類成4個象限
+    find_4_corners()  # 找出4個角落點
+    decrease_threshold_then_redo_houghlines_and_get_intersections()  # 降threshold，再走一次偵測流程
+    result = Perspective_transform()  # 透視轉換
 
     cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized.jpg", gray_normalized)  # 生成 灰階圖
-    cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_horizontal_" + f'{filter_size}' + ".jpg", gray_normalized_kernel_horizontal)  # 生成 水平卷積 的結果圖
-    cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_vertical_" + f'{filter_size}' + ".jpg", gray_normalized_kernel_vertical)  # 生成 垂直卷積 的結果圖
-    cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_canny_houghlines_" + f'{canny_threshold}' + "-" + f'{canny_threshold}' + "-" + f'{hough_lines_threshold}' + ".jpg", src)  # 生成 霍夫直線偵測 的結果圖
+    cv.imwrite(
+        "developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_horizontal_" + f'{filter_size}' + ".jpg",
+        gray_normalized_kernel_horizontal)  # 生成 水平卷積 的結果圖
+    cv.imwrite(
+        "developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_vertical_" + f'{filter_size}' + ".jpg",
+        gray_normalized_kernel_vertical)  # 生成 垂直卷積 的結果圖
+    cv.imwrite(
+        "developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_canny_houghlines_" + f'{canny_threshold}' + "-" + f'{canny_threshold}' + "-" + f'{hough_lines_threshold}' + ".jpg",
+        src)  # 生成 霍夫直線偵測 的結果圖
     cv.imwrite("developing_images\\" + f'{file_name}' + "_final_result.jpg", result)  # 生成 透視轉換後 的結果圖
 
     print("\nHough_lines Finished.\n")
     print("\"" + f'{file_name}' + "\" DONE.\n-----")
 
-    return result, corner_each_quadrant
 
 
 if __name__ == "__main__":

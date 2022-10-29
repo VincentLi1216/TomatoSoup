@@ -5,6 +5,8 @@ import time
 import glob
 import os
 
+
+
 def cam_cap():
     cv2.namedWindow("TomatoSoup - Press \"Q\" to capture")
     cv2.setWindowProperty("TomatoSoup - Press \"Q\" to capture", cv2.WND_PROP_TOPMOST, 1) ##永遠置頂窗口
