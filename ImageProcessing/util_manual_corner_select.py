@@ -26,18 +26,18 @@ def corner_selector(img = None, input_dots = None):
     global fix_phase
     global origin_frame
 
-    get_frame()
 
 
 
 
-
-    if img == None and input_dots == None:
+    if img == None and input_dots == None:  #沒有任何輸入
         frame = distorion_correction()
         dots = get_json_data("user_pref.json", "corners")
-    else:
+    elif img != None and input_dots == None:  #沒有成功抓到角位
         frame = img
         dots = input_dots
+    else:
+        get_frame()
 
     origin_frame = frame.copy()  # 將原始frame進行快照，以便未來修正點可以清除後重新畫線
 
