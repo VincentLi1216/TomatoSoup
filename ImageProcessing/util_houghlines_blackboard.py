@@ -16,7 +16,7 @@ quadrant_1_corner, quadrant_2_corner, quadrant_3_corner, quadrant_4_corner = [],
 gray_normalized_kernel_horizontal, gray_normalized_kernel_vertical = None, None
 nr, nc = 0, 0
 hough_lines_threshold = 600    # Hough_lines的Threshold 預設為 600
-canny_threshold = 80           # Canny的Threshold 預設為 80
+canny_threshold = 70           # Canny的Threshold 預設為 80
 src, src2 = None, None
 
 def return_time():    # 回傳當前時間
@@ -66,6 +66,7 @@ def Get_intersection_points():    # 拿直線方程式取交點
     # eq: slope*x - y = slope*x0 - y0
     global intersection_points
     intersection_points = []
+    print("Houghlines Threshold:", hough_lines_threshold)
     print("Horizontal Lines Founded:", len(horizontal_lines))
     print("Vertical Lines Founded:", len(vertical_lines))
     for horizontal_line in horizontal_lines:
@@ -110,7 +111,7 @@ def fine_corner_condition(quadrant):   # 判斷水平線有沒有靠近圖片中
     max_d = 0
     temp_corner = []
     for point in globals()['quadrant_' + str(f'{quadrant}') + '_corner']:
-        if (abs(point[0] - (nc/2)) > nc/5) and (abs(point[1] - (nr/2)) > nr/5):  # (距離中心點>max_d)&(距離邊界>40px)&(點不能超出邊界)
+        if (abs(point[0] - (nc/2)) > nc/6) and (abs(point[1] - (nr/2)) > nr/6) and (nc/2 - abs(point[0] - (nc/2)) > 125) and ((nr/2 - abs(point[1] - (nr/2)) > 125)):  # (距離中心點>max_d)&(距離邊界>40px)&(點不能超出邊界)
             d = math.sqrt((point[0] - nc / 2) ** 2 + (point[1] - nr / 2) ** 2)
             if (d >= max_d):
                 temp_corner = point
@@ -127,13 +128,16 @@ def fine_distance_to_edge(x, y):  # 判斷：交點是否位於靠近圖片外�
 
 def find_4_corners():   # 找出4個角落點
     while (all_quadrants_include_intersection() == False):
+        if hough_lines_threshold <= 50:
+            return "can't find corners."
+        print("--")
         decrease_threshold_then_redo_houghlines_and_get_intersections()
 
     for quadrant in range(1, 5):   # 做條件判斷，如果有交點不符合條件，則降低Hough_lines的Threshold，然後全部重新再算一次
         temp_corner = fine_corner_condition(quadrant)
-        while (fine_distance_to_edge(temp_corner[0], temp_corner[1]) == False):
-            decrease_threshold_then_redo_houghlines_and_get_intersections()
-            temp_corner = fine_corner_condition(quadrant)
+        # while (fine_distance_to_edge(temp_corner[0], temp_corner[1]) == False):
+        #     decrease_threshold_then_redo_houghlines_and_get_intersections()
+        #     temp_corner = fine_corner_condition(quadrant)
         corner_each_quadrant.append(temp_corner)
 
     for corner in corner_each_quadrant:   # 畫出4個角落點
@@ -161,7 +165,9 @@ def decrease_threshold_then_redo_houghlines_and_get_intersections():   # 當一�
     quadrant_categorization()
 
 
-def houghlines_blackboard(file_name, src_from_webcam):
+def houghlines_blackboard(c_time_file_name, src_from_webcam):
+    global file_name
+    file_name = c_time_file_name
     global filter_size
     global horizontal_lines
     global vertical_lines
@@ -205,9 +211,12 @@ def houghlines_blackboard(file_name, src_from_webcam):
     Hough_lines(hough_lines_threshold, gray_normalized_kernel_horizontal, "horizontal")  # 霍夫直線偵測 找水平線
     Get_intersection_points()  # 拿直線方程式取交點
     quadrant_categorization()  # 將所有的交點分類成4個象限
+    if find_4_corners() == "can't find corners.":  # 找出4個角落點
+        return src2
     find_4_corners()  # 找出4個角落點
     decrease_threshold_then_redo_houghlines_and_get_intersections()  # 降threshold，再走一次偵測流程
     result = Perspective_transform()  # 透視轉換
+
 
     cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized.jpg", gray_normalized)  # 生成 灰階圖
     cv.imwrite(
@@ -224,6 +233,7 @@ def houghlines_blackboard(file_name, src_from_webcam):
     print("\nHough_lines Finished.\n")
     print("\"" + f'{file_name}' + "\" DONE.\n-----")
 
+    return result, corner_each_quadrant
 
 
 if __name__ == "__main__":

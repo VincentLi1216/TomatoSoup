@@ -74,6 +74,7 @@ four_corners = None
 
 try:
     return_img, four_corners = houghlines_blackboard(c_time, distorion_correction())
+    print(four_corners)
     cv2.imshow("imshow", return_img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
