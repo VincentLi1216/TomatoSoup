@@ -127,6 +127,8 @@ def fine_distance_to_edge(x, y):  # 判斷：交點是否位於靠近圖片外�
     return True
 
 def find_4_corners():   # 找出4個角落點
+    is_found_all = True
+
     while (all_quadrants_include_intersection() == False):
         if hough_lines_threshold <= 50:
             return "can't find corners."
@@ -139,9 +141,18 @@ def find_4_corners():   # 找出4個角落點
         #     decrease_threshold_then_redo_houghlines_and_get_intersections()
         #     temp_corner = fine_corner_condition(quadrant)
         corner_each_quadrant.append(temp_corner)
+    print(corner_each_quadrant)
 
-    for corner in corner_each_quadrant:   # 畫出4個角落點
-        cv.circle(src, (int(corner[0]), int(corner[1])), 15, (0, 255, 0), -1)
+    for corner in corner_each_quadrant:
+        if corner == []:
+            is_found_all = False
+
+    if is_found_all == False:
+        print("Did not find all four corners")
+        return "can't find corners."
+    else:
+        for corner in corner_each_quadrant:   # 畫出4個角落點
+            cv.circle(src, (int(corner[0]), int(corner[1])), 15, (0, 255, 0), -1)
 
 def Perspective_transform():   # 透視轉換
     pts1 = np.float32(
@@ -215,7 +226,7 @@ def houghlines_blackboard(c_time_file_name, src_from_webcam):
         return src2
     find_4_corners()  # 找出4個角落點
     decrease_threshold_then_redo_houghlines_and_get_intersections()  # 降threshold，再走一次偵測流程
-    result = Perspective_transform()  # 透視轉換
+    # result = Perspective_transform()  # 透視轉換
 
 
     cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized.jpg", gray_normalized)  # 生成 灰階圖
@@ -228,12 +239,12 @@ def houghlines_blackboard(c_time_file_name, src_from_webcam):
     cv.imwrite(
         "developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_canny_houghlines_" + f'{canny_threshold}' + "-" + f'{canny_threshold}' + "-" + f'{hough_lines_threshold}' + ".jpg",
         src)  # 生成 霍夫直線偵測 的結果圖
-    cv.imwrite("developing_images\\" + f'{file_name}' + "_final_result.jpg", result)  # 生成 透視轉換後 的結果圖
+    # cv.imwrite("developing_images\\" + f'{file_name}' + "_final_result.jpg", result)  # 生成 透視轉換後 的結果圖
 
     print("\nHough_lines Finished.\n")
     print("\"" + f'{file_name}' + "\" DONE.\n-----")
 
-    return result, corner_each_quadrant
+    return src2, corner_each_quadrant
 
 
 if __name__ == "__main__":

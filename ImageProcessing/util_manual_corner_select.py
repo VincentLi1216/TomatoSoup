@@ -31,7 +31,8 @@ def corner_selector(img = None, input_dots = None):
     if img is not None and input_dots is not None:  #成功自動抓到角位
         print("成功抓到角位")
         frame = img
-        dots = input_dots
+        four_dots = input_dots[:4]
+        dots = four_dots
     elif img is not None and input_dots is None:  #無法自動抓到角位
         print("沒有抓到角位")
         frame = img

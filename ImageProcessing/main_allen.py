@@ -72,17 +72,30 @@ c_time = allen_return_time()
 return_img = None
 four_corners = None
 
-try:
-    return_img, four_corners = houghlines_blackboard(c_time, distorion_correction())
-    print(four_corners)
-    cv2.imshow("imshow", return_img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-    return_img = corner_selector(img=return_img, input_dots=four_corners)
-except:
-    print("iam here")
-    return_img = cv2.imread("imgs/IMG_5433.JPG")
-    corner_selector(img=return_img)
+# try:
+#     return_img, four_corners = houghlines_blackboard(c_time, distorion_correction())
+#     print(four_corners)
+#     cv2.imshow("imshow", return_img)
+#     cv2.waitKey(0)
+#     cv2.destroyAllWindows()
+#     return_img = corner_selector(img=return_img, input_dots=four_corners)
+# except:
+#     print("iam here")
+#     return_img = cv2.imread("imgs/IMG_5433.JPG")
+#     corner_selector(img=return_img)
+
+# corner_selector(houghlines_blackboard(c_time, distorion_correction()))
+
+return_value = houghlines_blackboard(c_time, distorion_correction())
+
+
+if len(return_value) != 2120:  #got the corners successfully
+    img = return_value[0]
+    corners = return_value[1]
+    return_img = corner_selector(img, corners)
+elif len(return_value) == 2120:  #did not got the corners
+    return_img = corner_selector(return_value)
+
 
 file_name = save_img(return_img , "final" )
 server_path = "/home/ubuntu/static/" + date + "/" + file_name
