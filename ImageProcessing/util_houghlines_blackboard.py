@@ -16,7 +16,7 @@ quadrant_1_corner, quadrant_2_corner, quadrant_3_corner, quadrant_4_corner = [],
 gray_normalized_kernel_horizontal, gray_normalized_kernel_vertical = None, None
 nr, nc = 0, 0
 hough_lines_threshold = 600    # Hough_lines的Threshold 預設為 600
-canny_threshold = 70           # Canny的Threshold 預設為 80
+canny_threshold = 100           # Canny的Threshold 預設為 80
 src, src2 = None, None
 
 def return_time():    # 回傳當前時間
@@ -171,7 +171,7 @@ def decrease_threshold_then_redo_houghlines_and_get_intersections():   # 當一�
     global gray_normalized_kernel_vertical
     hough_lines_threshold -= 10
     Hough_lines(hough_lines_threshold, gray_normalized_kernel_vertical, "vertical")
-    # Hough_lines(hough_lines_threshold, gray_normalized_kernel_horizontal, "horizontal")
+    Hough_lines(hough_lines_threshold, gray_normalized_kernel_horizontal, "horizontal")
     Get_intersection_points()
     quadrant_categorization()
 
@@ -224,9 +224,9 @@ def houghlines_blackboard(c_time_file_name, src_from_webcam):
     quadrant_categorization()  # 將所有的交點分類成4個象限
     if find_4_corners() == "can't find corners.":  # 找出4個角落點
         return src2
-    find_4_corners()  # 找出4個角落點
-    decrease_threshold_then_redo_houghlines_and_get_intersections()  # 降threshold，再走一次偵測流程
-    # result = Perspective_transform()  # 透視轉換
+    # find_4_corners()  # 找出4個角落點
+    # decrease_threshold_then_redo_houghlines_and_get_intersections()  # 降threshold，再走一次偵測流程
+    result = Perspective_transform()  # 透視轉換
 
 
     cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized.jpg", gray_normalized)  # 生成 灰階圖
@@ -239,7 +239,7 @@ def houghlines_blackboard(c_time_file_name, src_from_webcam):
     cv.imwrite(
         "developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_canny_houghlines_" + f'{canny_threshold}' + "-" + f'{canny_threshold}' + "-" + f'{hough_lines_threshold}' + ".jpg",
         src)  # 生成 霍夫直線偵測 的結果圖
-    # cv.imwrite("developing_images\\" + f'{file_name}' + "_final_result.jpg", result)  # 生成 透視轉換後 的結果圖
+    cv.imwrite("developing_images\\" + f'{file_name}' + "_final_result.jpg", result)  # 生成 透視轉換後 的結果圖
 
     print("\nHough_lines Finished.\n")
     print("\"" + f'{file_name}' + "\" DONE.\n-----")
