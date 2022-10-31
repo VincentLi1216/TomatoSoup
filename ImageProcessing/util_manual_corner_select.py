@@ -34,7 +34,7 @@ def corner_selector(img = None, input_dots = None):
         four_dots = input_dots[:4]
         dots = four_dots
     elif img is not None and input_dots is None:  #無法自動抓到角位
-        print("沒有抓到角位")
+        print("請手動調整")
         frame = img
         dots = get_json_data("user_pref.json", "corners")
     else:  #沒有呼叫自動截圖函式
@@ -44,8 +44,6 @@ def corner_selector(img = None, input_dots = None):
 
 
     origin_frame = frame.copy()  # 將原始frame進行快照，以便未來修正點可以清除後重新畫線
-
-
 
 
 
@@ -68,19 +66,12 @@ def corner_selector(img = None, input_dots = None):
         cv2.imshow('TomatoSoup - Press \"Q\" to confirm corners', frame)
 
 
-
-
-
     def show_xy(event, x, y, flags, param):
         global dot_num
         global index
         global fix_phase
         global origin_frame
         global frame
-
-
-
-
 
         if event == 1:
 
@@ -156,31 +147,10 @@ def corner_selector(img = None, input_dots = None):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-    # 將四個點依照象限排列
-    dots.sort(key=lambda s: s[0])
 
-    sorted_dots = []
-    if dots[2][1] < dots[3][1]:
-        sorted_dots.append(dots[2])
-        sorted_dots.append(dots[3])
-    else:
-        sorted_dots.append(dots[3])
-        sorted_dots.append(dots[2])
+    fixed_img = perspective_transform(origin_frame, dots)
 
-    if dots[0][1] > dots[1][1]:
-        sorted_dots.append(dots[0])
-        sorted_dots.append(dots[1])
-    else:
-        sorted_dots.append(dots[1])
-        sorted_dots.append(dots[0])
-    # print(sorted_dots)
 
-    put_json_data("user_pref.json", ["corners", sorted_dots])
-
-    fixed_img = perspective_transform(origin_frame, sorted_dots)
-
-    # cv2.imwrite("prc_img.jpg", fixed_img)
-    # save_img(fixed_img, "fixed")
     return fixed_img
 
 
