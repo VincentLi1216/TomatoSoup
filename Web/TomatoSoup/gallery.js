@@ -1,24 +1,25 @@
-var pics = document.getElementById('pics');
+let pics = document.getElementById('pics');
 
-var url = new URL(location.href);
-var date = url.searchParams.get('date')
+let url = new URL(location.href);
+let date = url.searchParams.get('date')
 console.log(date);
 searchFiles(date);
 
 
-function searchFiles(fd){
-	var paths = []
+function searchFiles(fd) {
+	let paths = [];
 	fetch("http://114.32.43.46/static/"+fd+"/")
-    .then(function(response) {
-        return response.text()
-    })
-    .then(function(html) {
-        var parser = new DOMParser();
-        var doc = parser.parseFromString(html, "text/html");
-
+    .then(response => { return response.text() })
+    .then(html => {
+        // Creat a DOMParser object to parse the html-type text
+        let parser = new DOMParser();
+        let doc = parser.parseFromString(html, "text/html");
+        // Select all the line that contains urls needed
 		dirs = doc.querySelectorAll('html body pre a');
-		for (i=1;i<dirs.length;i++){
-			var temp = String(dirs[i]).split('/');
+        // Get the directories for pictures
+		for (dir of dirs){
+            // Split the whole string and get the urls part
+			let temp = String(dir).split('/');
 			paths.push(temp[4]);
 		}
         console.log("paths caughted");
@@ -30,15 +31,11 @@ function searchFiles(fd){
 }
 
 function renderGallery(paths) {
-	var str = "";
-    console.log(paths)
-	for(var i=0;i<paths.length;i++){
-		console.log(i);
-        str += "<li><div class=pics_set><img src='http://114.32.43.46/static/" +  date + "/" + paths[i] + "'></div></li>";
-        console.log(str);
-	}
+	let str = "";
+    // Generate html elements and render on the gallery page
+	for(path of paths)
+        str += "<li><div class=pics_set><img src='http://114.32.43.46/static/" +  date + "/" + path + "'></div></li>";
 	pics.innerHTML = str;
-    console.log(pics.innerHTML);
     scroll_to_buttom();
 }
 
