@@ -26,5 +26,5 @@ elif len(return_value) == 2120:  #did not got the corners
 
 
 file_name = save_img(return_img , "final" )
-server_path = "/home/ubuntu/static/" + date + "/" + file_name
+server_path = "/home/ubuntu/tomatoSoup/images/" + date + "/" + file_name
 put("imgs/" + date + "/" + file_name, server_path)

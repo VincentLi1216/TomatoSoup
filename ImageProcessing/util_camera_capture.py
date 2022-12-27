@@ -36,9 +36,9 @@ def cam_cap():
             os.remove(latest_file)  #刪除本機端檔案
             latest_file = os.path.basename(latest_file)  #取得檔案名稱就好，不需要路徑
 
-            remove("/home/ubuntu/static/" + date + "/" + latest_file)  #刪除伺服器端檔案
+            remove("/home/ubuntu/tomatoSoup/images/" + date + "/" + latest_file)  #刪除伺服器端檔案
 
-            os._exit(0)
+            os.exit(0)
 
             return
         else:

@@ -15,7 +15,7 @@ horizontal_lines, vertical_lines, intersection_points, corner_each_quadrant = []
 quadrant_1_corner, quadrant_2_corner, quadrant_3_corner, quadrant_4_corner = [], [], [], []
 gray_normalized_kernel_horizontal, gray_normalized_kernel_vertical = None, None
 nr, nc = 0, 0
-hough_lines_threshold = 600    # Hough_lines的Threshold 預設為 600
+hough_lines_threshold = 550    # Hough_lines的Threshold 預設為 600
 canny_threshold = 100           # Canny的Threshold 預設為 80
 src, src2 = None, None
 
@@ -254,7 +254,7 @@ if __name__ == "__main__":
             # filter_size: 33 is default
             filter_size = int(input("Convolution Filter Size (n*n)\nDefault: 33*33\nPlease type in the n you want(odd and >=5): "))    # 使用者輸入卷積的Filter大小
         else:
-            break
+            brea1
 
     start = time.time()  # 記錄開始執行程式的時間
     file_name = "FFC01EC6-E6F4-4FFF-BBD8-DFC4D0E0A6E1-16.9"

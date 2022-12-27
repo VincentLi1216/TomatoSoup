@@ -2,28 +2,19 @@ import paramiko
 import SSH_KEY
 import time
 from util_warning import *
+from util_progress_bar import *
 
 
 
 def trans_status(now, total):
     start_time = time.time()
     file_size = total/1000000
-    progress = now/total
-    bar_width = 50
-    bar = "["
-
-    for i in range(int(now*bar_width / total)):
-        bar += "█"
-
-    for j in range(bar_width-int(now*bar_width / total)):
-            bar += " "
-
-    bar += "]" + str(int(progress*100)) + "%"
-
-    print(bar)
+    progress_bar(now, total)
 
     if now == total:
+        progress_bar(now, total)
         duration = time.time() - start_time
+        print()
         print("Total Size:", round(file_size,2), "MB in", round(duration*100000, 2), "secs")
 
 
@@ -95,8 +86,9 @@ def mkdir(folder_name):
         ssh.connect(hostname=SSH_KEY.hostname, username=SSH_KEY.username, password=SSH_KEY.password, port=SSH_KEY.port)
         sftp_client = ssh.open_sftp()
 
+
         # 製作資料夾
-        ssh.exec_command("mkdir /home/ubuntu/static/" + folder_name)
+        ssh.exec_command("mkdir /home/ubuntu/tomatoSoup/images/" + folder_name)
 
         sftp_client.close()
         ssh.close()
@@ -121,8 +113,8 @@ def server_command(command):
         warning("Can NOT execute the command from the server!")
 
 if __name__ == "__main__":
-    # put("imgs/10-04-2022/final_10-04-2022_15:59:34.jpg", "/home/ubuntu/static/10-04-2022/final_10-04-2022_15:59:34.jpg")
+    put("imgs/12-27-2022/final_12-27-2022_13-43-06.jpg", "/home/ubuntu/tomatoSoup/images/12-27-2022/final_12-27-2022_13-43-06.jpg")
     # remove("/home/ubuntu/static/final_10-02-2022_23:50:53.jpg")
-    # get("/home/ubuntu/static/wallpaper.jpg", "imgs/wallpaper.jpg")
-    server_command("rm -r /home/ubuntu/static/10-04-2022")
-
+    # get("/home/ubuntu/tomatoSoup/images/12-27-2022/final_12-14-2022_17-09-26.jpg", "imgs/final_12-14-2022_17-09-26.jpg")
+    # server_command("ls")
+    # mkdir("12-27-2022")
