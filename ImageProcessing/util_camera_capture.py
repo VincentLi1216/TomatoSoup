@@ -38,7 +38,7 @@ def cam_cap():
 
             remove("/home/ubuntu/tomatoSoup/images/" + date + "/" + latest_file)  #刪除伺服器端檔案
 
-            os.exit(0)
+            os._exit(0)
 
             return
         else:
