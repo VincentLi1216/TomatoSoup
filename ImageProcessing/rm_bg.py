@@ -19,7 +19,6 @@ for y in range(height):
     for x in range(width):
         if abs(img[y][x][0]-rm_b) < tolerance and abs(img[y][x][1]-rm_g) < tolerance and abs(img[y][x][2]-rm_r) < tolerance:
             img[y][x] = [255, 0, 0]
-        # print(img[y][x])
 
 cv2.imshow('My Image', img)
 end_time = time.time()

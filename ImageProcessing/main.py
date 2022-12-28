@@ -6,10 +6,9 @@ from util_houghlines_blackboard import *
 from util_server_communicator import *
 
 
-
-
 file_name = save_img(corner_selector(), "final")
-server_path = "/home/ubuntu/static/" + date + "/" + file_name
+server_path = "/home/ubuntu/tomatoSoup/images/" + date + "/" + file_name
+print(server_path)
 put("imgs/" + date + "/" + file_name, server_path)
 
 

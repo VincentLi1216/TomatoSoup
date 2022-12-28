@@ -15,8 +15,8 @@ horizontal_lines, vertical_lines, intersection_points, corner_each_quadrant = []
 quadrant_1_corner, quadrant_2_corner, quadrant_3_corner, quadrant_4_corner = [], [], [], []
 gray_normalized_kernel_horizontal, gray_normalized_kernel_vertical = None, None
 nr, nc = 0, 0
-hough_lines_threshold = 600    # Hough_lines的Threshold 預設為 600
-canny_threshold = 80           # Canny的Threshold 預設為 80
+hough_lines_threshold = 550    # Hough_lines的Threshold 預設為 600
+canny_threshold = 100           # Canny的Threshold 預設為 80
 src, src2 = None, None
 
 def return_time():    # 回傳當前時間
@@ -66,6 +66,7 @@ def Get_intersection_points():    # 拿直線方程式取交點
     # eq: slope*x - y = slope*x0 - y0
     global intersection_points
     intersection_points = []
+    print("Houghlines Threshold:", hough_lines_threshold)
     print("Horizontal Lines Founded:", len(horizontal_lines))
     print("Vertical Lines Founded:", len(vertical_lines))
     for horizontal_line in horizontal_lines:
@@ -107,12 +108,14 @@ def all_quadrants_include_intersection():   # 檢查是不是每個象限都有�
         return "Error"
 
 def fine_corner_condition(quadrant):   # 判斷水平線有沒有靠近圖片中心，過度遠離的不算；垂直線有沒有遠離圖片中心，過度靠近的不算
-    # max_d = 0
+    max_d = 0
     temp_corner = []
     for point in globals()['quadrant_' + str(f'{quadrant}') + '_corner']:
-        if (abs(point[0] - (nc/2)) > nc*3/10) and (abs(point[1] - (nr/2)) < nr*3/10):  # (距離中心點>max_d)&(距離邊界>40px)&(點不能超出邊界)
-            # max_d = math.sqrt((point[0] - nc / 2) ** 2 + (point[1] - nr / 2) ** 2)
-            temp_corner = point
+        if (abs(point[0] - (nc/2)) > nc/6) and (abs(point[1] - (nr/2)) > nr/6) and (nc/2 - abs(point[0] - (nc/2)) > 125) and ((nr/2 - abs(point[1] - (nr/2)) > 125)):  # (距離中心點>max_d)&(距離邊界>40px)&(點不能超出邊界)
+            d = math.sqrt((point[0] - nc / 2) ** 2 + (point[1] - nr / 2) ** 2)
+            if (d >= max_d):
+                temp_corner = point
+                max_d = d
             print(temp_corner)
     return temp_corner
 
@@ -124,18 +127,32 @@ def fine_distance_to_edge(x, y):  # 判斷：交點是否位於靠近圖片外�
     return True
 
 def find_4_corners():   # 找出4個角落點
+    is_found_all = True
+
     while (all_quadrants_include_intersection() == False):
+        if hough_lines_threshold <= 50:
+            return "can't find corners."
+        print("--")
         decrease_threshold_then_redo_houghlines_and_get_intersections()
 
     for quadrant in range(1, 5):   # 做條件判斷，如果有交點不符合條件，則降低Hough_lines的Threshold，然後全部重新再算一次
         temp_corner = fine_corner_condition(quadrant)
-        while (fine_distance_to_edge(temp_corner[0], temp_corner[1]) == False):
-            decrease_threshold_then_redo_houghlines_and_get_intersections()
-            temp_corner = fine_corner_condition(quadrant)
+        # while (fine_distance_to_edge(temp_corner[0], temp_corner[1]) == False):
+        #     decrease_threshold_then_redo_houghlines_and_get_intersections()
+        #     temp_corner = fine_corner_condition(quadrant)
         corner_each_quadrant.append(temp_corner)
+    print(corner_each_quadrant)
 
-    for corner in corner_each_quadrant:   # 畫出4個角落點
-        cv.circle(src, (int(corner[0]), int(corner[1])), 15, (0, 255, 0), -1)
+    for corner in corner_each_quadrant:
+        if corner == []:
+            is_found_all = False
+
+    if is_found_all == False:
+        print("Did not find all four corners")
+        return "can't find corners."
+    else:
+        for corner in corner_each_quadrant:   # 畫出4個角落點
+            cv.circle(src, (int(corner[0]), int(corner[1])), 15, (0, 255, 0), -1)
 
 def Perspective_transform():   # 透視轉換
     pts1 = np.float32(
@@ -154,12 +171,14 @@ def decrease_threshold_then_redo_houghlines_and_get_intersections():   # 當一�
     global gray_normalized_kernel_vertical
     hough_lines_threshold -= 10
     Hough_lines(hough_lines_threshold, gray_normalized_kernel_vertical, "vertical")
-    # Hough_lines(hough_lines_threshold, gray_normalized_kernel_horizontal, "horizontal")
+    Hough_lines(hough_lines_threshold, gray_normalized_kernel_horizontal, "horizontal")
     Get_intersection_points()
     quadrant_categorization()
 
 
-def houghlines_blackboard(file_name, src_from_webcam):
+def houghlines_blackboard(c_time_file_name, src_from_webcam):
+    global file_name
+    file_name = c_time_file_name
     global filter_size
     global horizontal_lines
     global vertical_lines
@@ -188,7 +207,8 @@ def houghlines_blackboard(file_name, src_from_webcam):
     print("-----\nFilename:", file_name)
 
     gray_normalized = histogram_equalization(src)  # 呼叫副程式做 直方圖標準化
-    gray_normalized_kernel_horizontal, gray_normalized_kernel_vertical = convolution(file_name, gray_normalized, filter_size)  # 呼叫副程式做 卷積
+    gray_normalized_kernel_horizontal, gray_normalized_kernel_vertical = convolution(file_name, gray_normalized,
+                                                                                     filter_size)  # 呼叫副程式做 卷積
     gray_normalized_kernel_horizontal = crop(gray_normalized_kernel_horizontal)  # 呼叫副程式做 裁切
     gray_normalized_kernel_vertical = crop(gray_normalized_kernel_vertical)  # 呼叫副程式做 裁切
 
@@ -198,24 +218,34 @@ def houghlines_blackboard(file_name, src_from_webcam):
     # img.shape => (rows, columns)
     src2 = src.copy()
 
-    Hough_lines(hough_lines_threshold, gray_normalized_kernel_vertical, "vertical")   # 霍夫直線偵測 找垂直線
-    Hough_lines(hough_lines_threshold, gray_normalized_kernel_horizontal, "horizontal")   # 霍夫直線偵測 找水平線
-    Get_intersection_points()   # 拿直線方程式取交點
-    quadrant_categorization()   # 將所有的交點分類成4個象限
-    find_4_corners()   # 找出4個角落點
-    decrease_threshold_then_redo_houghlines_and_get_intersections()   # 降threshold，再走一次偵測流程
-    result = Perspective_transform()   # 透視轉換
+    Hough_lines(hough_lines_threshold, gray_normalized_kernel_vertical, "vertical")  # 霍夫直線偵測 找垂直線
+    Hough_lines(hough_lines_threshold, gray_normalized_kernel_horizontal, "horizontal")  # 霍夫直線偵測 找水平線
+    Get_intersection_points()  # 拿直線方程式取交點
+    quadrant_categorization()  # 將所有的交點分類成4個象限
+    if find_4_corners() == "can't find corners.":  # 找出4個角落點
+        return src2
+    # find_4_corners()  # 找出4個角落點
+    # decrease_threshold_then_redo_houghlines_and_get_intersections()  # 降threshold，再走一次偵測流程
+    result = Perspective_transform()  # 透視轉換
+
 
     cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized.jpg", gray_normalized)  # 生成 灰階圖
-    cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_horizontal_" + f'{filter_size}' + ".jpg", gray_normalized_kernel_horizontal)  # 生成 水平卷積 的結果圖
-    cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_vertical_" + f'{filter_size}' + ".jpg", gray_normalized_kernel_vertical)  # 生成 垂直卷積 的結果圖
-    cv.imwrite("developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_canny_houghlines_" + f'{canny_threshold}' + "-" + f'{canny_threshold}' + "-" + f'{hough_lines_threshold}' + ".jpg", src)  # 生成 霍夫直線偵測 的結果圖
+    cv.imwrite(
+        "developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_horizontal_" + f'{filter_size}' + ".jpg",
+        gray_normalized_kernel_horizontal)  # 生成 水平卷積 的結果圖
+    cv.imwrite(
+        "developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_vertical_" + f'{filter_size}' + ".jpg",
+        gray_normalized_kernel_vertical)  # 生成 垂直卷積 的結果圖
+    cv.imwrite(
+        "developing_images\\" + f'{file_name}' + "_gray_normalized_kernel_canny_houghlines_" + f'{canny_threshold}' + "-" + f'{canny_threshold}' + "-" + f'{hough_lines_threshold}' + ".jpg",
+        src)  # 生成 霍夫直線偵測 的結果圖
     cv.imwrite("developing_images\\" + f'{file_name}' + "_final_result.jpg", result)  # 生成 透視轉換後 的結果圖
 
     print("\nHough_lines Finished.\n")
     print("\"" + f'{file_name}' + "\" DONE.\n-----")
+    print("corners", corner_each_quadrant)
 
-    return result
+    return src2, corner_each_quadrant
 
 
 if __name__ == "__main__":
@@ -224,7 +254,7 @@ if __name__ == "__main__":
             # filter_size: 33 is default
             filter_size = int(input("Convolution Filter Size (n*n)\nDefault: 33*33\nPlease type in the n you want(odd and >=5): "))    # 使用者輸入卷積的Filter大小
         else:
-            break
+            brea1
 
     start = time.time()  # 記錄開始執行程式的時間
     file_name = "FFC01EC6-E6F4-4FFF-BBD8-DFC4D0E0A6E1-16.9"

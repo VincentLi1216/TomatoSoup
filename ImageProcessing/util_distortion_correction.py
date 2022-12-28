@@ -12,7 +12,7 @@ def distorion_correction():
   distCoeff = np.zeros((4, 1), np.float64)
 
   # TODO: add your coefficients here!
-  k1 = 0.0e-7;  # negative to remove barrel distortion
+  k1 = 10e-7;  # negative to remove barrel distortion?>
   k2 = 0.0;
   p1 = 0.0;
   p2 = 0.0;
