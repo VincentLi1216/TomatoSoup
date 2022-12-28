@@ -3,12 +3,9 @@ package com.delicious.tomatosoup.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.delicious.tomatosoup.databinding.CourseItemBinding
 import com.delicious.tomatosoup.databinding.DateItemBinding
-import com.delicious.tomatosoup.model.Date
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.ktx.toObject
 
 open class DateAdapter(query: Query, private val listener: onDateSelectedListener) :
     FirestoreAdapter<DateAdapter.DateViewHolder>(query) {
@@ -18,8 +15,7 @@ open class DateAdapter(query: Query, private val listener: onDateSelectedListene
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DateViewHolder {
-        return DateAdapter.DateViewHolder(
-            DateItemBinding.inflate(
+        return DateViewHolder(DateItemBinding.inflate(
                 LayoutInflater.from(parent.context), parent, false
             )
         )
@@ -34,8 +30,12 @@ open class DateAdapter(query: Query, private val listener: onDateSelectedListene
             snapshot: DocumentSnapshot,
             listener: onDateSelectedListener?
         ) {
-            val date = snapshot.toObject<Date>() ?: return
-            binding.date = date
+            binding.dateItemDate.text = snapshot.id
+
+            binding.root.setOnClickListener{
+                listener?.onDateSelected(snapshot)
+            }
+            binding.executePendingBindings()
         }
     }
 }

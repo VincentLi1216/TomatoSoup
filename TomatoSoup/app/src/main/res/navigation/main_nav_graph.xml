@@ -25,8 +25,7 @@
         android:id="@+id/ProfileFragment"
         android:name="com.delicious.tomatosoup.ui.profile.ProfileFragment"
         android:label="@string/profile_fragment_label"
-        tools:layout="@layout/fragment_profile">
-    </fragment>
+        tools:layout="@layout/fragment_profile"/>
 
     <fragment
         android:id="@+id/DateFragment"
@@ -35,6 +34,20 @@
         tools:layout="@layout/fragment_date" >
         <argument
             android:name="key_course_id"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_DateFragment_to_PictureFragment"
+            app:destination="@id/PictureFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/PictureFragment"
+        android:name="com.delicious.tomatosoup.ui.folder.PictureFragment"
+        android:label="@string/picture_fragment_label"
+        tools:layout="@layout/fragment_picture" >
+        <argument android:name="key_date_id"
+            app:argType="string" />
+        <argument android:name="key_course_id"
             app:argType="string" />
     </fragment>
 

@@ -2,9 +2,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-
+    <data>
+        <variable
+            name="picture"
+            type="com.delicious.tomatosoup.model.Picture" />
+    </data>
+    
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/dateItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/course_margin"
@@ -14,15 +18,16 @@
         app:cardElevation="@dimen/course_margin">
 
         <TextView
-            android:id="@+id/date_item_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/course_margin"
-            android:padding="16dp"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:textAppearance="?attr/textAppearanceHeadline6"
-            tools:text="10-09-2022" />
+            android:text="@{picture.path}"/>
 
+        <ImageView
+            android:id="@+id/image_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:imageUrl="@{picture.path}"
+            tools:srcCompat="@tools:sample/avatars" />
     </com.google.android.material.card.MaterialCardView>
+
 </layout>

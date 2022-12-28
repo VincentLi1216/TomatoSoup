@@ -5,16 +5,56 @@
     <!-- Strings used for fragments for navigation -->
     <string name="home_fragment_label">TomatoSoup</string>
     <string name="course_fragment_label">Course</string>
-    <string name="profile_fragment_label">Profile</string>
+    <string name="profile_fragment_label">我的帳號</string>
     <string name="date_fragment_label">Date</string>
+    <string name="picture_fragment_label">Pictures</string>
 
     <string name="shot">給爺拍</string>
-    <string name="previous">Previous</string>
 
     <!-- Strings used for navigation bar -->
     <string name="text_label_home">Home</string>
     <string name="text_label_folder">Folder</string>
     <string name="text_label_profile">Profile</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="action_switch_layout">Switch Layout</string>
+    <string name="action_logout">Logout</string>
+    <string name="title_activity_sign_in">SignInActivity</string>
+
+    <!-- Strings used for fragments for navigation -->
+    <string name="sign_in_fragment_label">SignIn Fragment</string>
+    <string name="sign_up_fragment_label">SignUp Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <!-- Strings used for empty content -->
+    <string name="empty">Sorry, there\'s nothing here now</string>
+
+    <string name="confirm_password_hint">Retype Password</string>
+    <string name="go_sign_in">Already Registered , Sign In!</string>
+    <string name="go_sign_up">Not Registered Yet , Sign Up!</string>
+
+    <!-- Firebase -->
+    <string name="hint_user_id">User ID</string>
+    <string name="get_custom_token">Get Token</string>
+    <string name="create_account">Create Account</string>
+    <string name="send_link">Send Link</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="verify_email">Verify</string>
+    <string name="loading">Loading…</string>
+    <string name="custom_token">Custom Token</string>
+    <string name="signed_in">Signed In</string>
+    <string name="signed_out">Signed Out</string>
+    <string name="token_null">Token: null</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="desc_firebase_lockup">Firebase logo and name</string>
+    <string name="auth_failed">Authentication failed</string>
+    <string name="status_verification_failed">Verification failed</string>
+    <string name="status_verification_succeeded">Verification succeeded</string>
+    <string name="status_sign_in_failed">Sign-in failed</string>
+    <string name="instant_validation">(instant validation)</string>
+
+    <string name="emailpassword_status_fmt">Email User: %1$s (verified: %2$b)</string>
+    <string name="emailpassword_title_text">Email and Password</string>
+
 </resources>

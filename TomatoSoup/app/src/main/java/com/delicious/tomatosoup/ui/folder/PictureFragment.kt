@@ -5,55 +5,57 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.delicious.tomatosoup.adapter.DateAdapter
-import com.delicious.tomatosoup.databinding.FragmentDateBinding
+import com.delicious.tomatosoup.adapter.PictureAdapter
+import com.delicious.tomatosoup.databinding.FragmentPictureBinding
+import com.delicious.tomatosoup.ui.folder.viewmodel.PictureViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
-class DateFragment : Fragment(),
-    DateAdapter.onDateSelectedListener {
+class PictureFragment : Fragment(),
+    PictureAdapter.onPictureSelectedListener {
 
     private lateinit var db: FirebaseFirestore
     private var query: Query? = null
-    private lateinit var courseRef: DocumentReference
+    private lateinit var dateRef: DocumentReference
 
-    private var _binding: FragmentDateBinding? = null
+    private var _binding: FragmentPictureBinding? = null
     private val binding get() = _binding!!
 
-    private var adapter: DateAdapter? = null
-    private val args: DateFragmentArgs by navArgs()
+    private lateinit var viewModel: PictureViewModel
+
+    private var adapter: PictureAdapter? = null
+    private val args: PictureFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
-        _binding = FragmentDateBinding.inflate(inflater, container, false)
+        _binding = FragmentPictureBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        className = DateFragmentArgs.fromBundle(requireArguments()).keyCourseId
-
         db = Firebase.firestore
-        courseRef = db.collection("sorted_by_subject").document(args.keyCourseId)
-        query = courseRef.collection("dates")
+        dateRef = db.collection("sorted_by_subject")
+            .document(args.keyCourseId)
+            .collection("dates")
+            .document(args.keyDateId)
+        query = dateRef.collection("pics")
 
         query?.let {
-            adapter = object : DateAdapter(it, this@DateFragment) {
+            adapter = object : PictureAdapter(it, this@PictureFragment) {
                 override fun onDataChanged() {
                     if (itemCount == 0) {
-//                        binding.recyclerDate.visibility = View.GONE
+//                        binding.recyclerPicture.visibility = View.GONE
 //                        binding.viewEmpty.visibility = View.VISIBLE
                     } else {
-                        binding.recyclerDate.visibility = View.VISIBLE
+                        binding.recyclerPicture.visibility = View.VISIBLE
 //                        binding.viewEmpty.visibility = View.GONE
                     }
                 }
@@ -66,11 +68,9 @@ class DateFragment : Fragment(),
                     ).show()
                 }
             }
-            binding.recyclerDate.adapter = adapter
+            binding.recyclerPicture.adapter = adapter
         }
-
-        binding.recyclerDate.layoutManager = LinearLayoutManager(context)
-//        binding.recyclerDate.layoutManager = GridLayoutManager(context, 2)
+        binding.recyclerPicture.layoutManager = LinearLayoutManager(context)
 
     }
 
@@ -89,8 +89,7 @@ class DateFragment : Fragment(),
         _binding = null
     }
 
-    override fun onDateSelected(date: DocumentSnapshot) {
-        val action = DateFragmentDirections.actionDateFragmentToPictureFragment(date.id, args.keyCourseId)
-        findNavController().navigate(action)
+    override fun onPictureSelected(date: DocumentSnapshot) {
+        TODO("Not yet implemented")
     }
 }

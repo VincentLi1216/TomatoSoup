@@ -1,12 +1,10 @@
 package com.delicious.tomatosoup.ui.folder
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.delicious.tomatosoup.adapter.CourseAdapter
 import com.delicious.tomatosoup.databinding.FragmentCourseBinding
 import com.google.android.material.snackbar.Snackbar
@@ -23,7 +21,7 @@ import com.google.firebase.ktx.Firebase
 open class CourseFragment : Fragment(),
     CourseAdapter.onCourseSelectedListener {
 
-    lateinit var db: FirebaseFirestore
+    private lateinit var db: FirebaseFirestore
     private var query: Query? = null
 
     private var _binding: FragmentCourseBinding? = null
@@ -60,7 +58,7 @@ open class CourseFragment : Fragment(),
                 }
 
                 override fun onError(e: FirebaseFirestoreException) {
-                    // Show a snackbar on errors
+                    // Show a snack-bar on errors
                     Snackbar.make(
                         binding.root,
                         "Error: check logs for info.", Snackbar.LENGTH_LONG
@@ -70,8 +68,8 @@ open class CourseFragment : Fragment(),
             binding.recyclerCourse.adapter = adapter
         }
 
-        binding.recyclerCourse.layoutManager = LinearLayoutManager(context)
-
+//        binding.recyclerCourse.layoutManager = LinearLayoutManager(context)
+        binding.recyclerCourse.layoutManager = GridLayoutManager(context, 2)
     }
 
     override fun onStart() {
@@ -90,8 +88,9 @@ open class CourseFragment : Fragment(),
     }
 
     override fun onCourseSelected(course: DocumentSnapshot) {
-
         val action = CourseFragmentDirections.actionCourseFragmentToDateFragment(course.id)
         findNavController().navigate(action)
     }
+
+
 }
