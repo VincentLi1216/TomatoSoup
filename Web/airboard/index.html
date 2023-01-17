@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <link rel="icon" href="TomatoSoup.ico" type="image/x-ico">
+    <title>TomatoSoup</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="ts_title">
+      <img src="TomatoSoup.png" style="height:10vh;width:10vh;border:none;">
+      <strong>TomatoSoup</strong>
+    </div>
+    
+    <div  class="divtop"></div>
+    <div class="calendar">
+
+        <!--Calander Title-->
+        <div class="title">
+          <h1 class="tomatored" id="calendar-title">Month</h1>
+          <h2 class="tomatored small" id="calendar-year">Year</h2>
+          <a href="" id="prev">Prev Month</a>
+          <a href="" id="next">Next Month</a>
+        </div>
+
+        <!--Calander-->
+        <div class="body">
+          <div class="lightgrey body-list">
+            <ul>
+              <li>MON</li>
+              <li>TUE</li>
+              <li>WED</li>
+              <li>THU</li>
+              <li>FRI</li>
+              <li>SAT</li>
+              <li>SUN</li>
+            </ul>
+          </div>
+          <div class="darkgrey body-list">
+            <ul id="days"></ul>
+          </div>
+        </div>
+    </div>
+
+
+
+    <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+        <script src="index.js"></script>
+</body>
+</html>
